@@ -15,24 +15,24 @@ const siteConfig = {
   privacyUrl: '#',
   header: {
     links: [
+      // {
+      //   id: 'features',
+      //   label: 'Features',
+      // },
+      // {
+      //   id: 'pricing',
+      //   label: 'Pricing',
+      // },
+      // {
+      //   id: 'faq',
+      //   label: 'FAQ',
+      // },
+      // {
+      //   label: 'Login',
+      //   href: '/login',
+      // },
       {
-        id: 'features',
-        label: 'Features',
-      },
-      {
-        id: 'pricing',
-        label: 'Pricing',
-      },
-      {
-        id: 'faq',
-        label: 'FAQ',
-      },
-      {
-        label: 'Login',
-        href: '/login',
-      },
-      {
-        label: 'Sign Up',
+        label: 'Log In / Sign Up',
         href: '/signup',
         variant: 'primary',
       },

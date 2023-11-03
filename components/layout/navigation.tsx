@@ -54,7 +54,7 @@ const Navigation: React.FC = () => {
         );
       })}
 
-      <ThemeToggle />
+      {/* <ThemeToggle /> */}
 
       <MobileNavButton
         ref={mobileNavBtnRef}

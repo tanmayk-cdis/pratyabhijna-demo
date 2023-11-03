@@ -24,7 +24,7 @@ export async function getStaticProps({ params }) {
 }
 
 const PostLayout: NextPage = ({ post }: any) => {
-  const MDXContent = useMDXComponent(post.body.code)
+  // const MDXContent = useMDXComponent(post.body.code)
 
   return (
     <>
@@ -33,10 +33,8 @@ const PostLayout: NextPage = ({ post }: any) => {
       </Head>
       <article className="mx-auto max-w-2xl py-16">
         <div className="mb-6 text-center">
-          <Link href="/">
-            <a className="text-center text-sm font-bold uppercase text-blue-700">
-              Home
-            </a>
+          <Link href="/" className="text-center text-sm font-bold uppercase text-blue-700">
+            Home
           </Link>
         </div>
         <div className="mb-6 text-center">
@@ -46,7 +44,10 @@ const PostLayout: NextPage = ({ post }: any) => {
           </time>
         </div>
         <div className="cl-post-body">
-          <MDXContent />
+          {/* <MDXContent /> */}
+          adf
+          adf
+          asdf
         </div>
       </article>
     </>

@@ -73,19 +73,19 @@ const Home: NextPage = () => {
 
         <HighlightsSection />
 
-        <FeaturesSection />
+        {/* <FeaturesSection />
 
         <TestimonialsSection />
 
         <PricingSection />
 
-        <FaqSection />
+        <FaqSection /> */}
       </Box>
     </Box>
   );
 };
 
-const HeroSection: React.FC = () => {
+export const HeroSection: React.FC = () => {
   return (
     <Box position="relative" overflow="hidden">
       <BackgroundGradient height="100%" />
@@ -97,8 +97,8 @@ const HeroSection: React.FC = () => {
             px="0"
             title={
               <FallInPlace>
-                Build beautiful
-                <Br /> software faster
+                Cognitive Ability
+                <Br /> Survey
               </FallInPlace>
             }
             description={
@@ -116,9 +116,9 @@ const HeroSection: React.FC = () => {
 
               <ButtonGroup spacing={4} alignItems="center">
                 <ButtonLink colorScheme="primary" size="lg" href="/signup">
-                  Sign Up
+                  Start
                 </ButtonLink>
-                <ButtonLink
+                {/* <ButtonLink
                   size="lg"
                   href="https://demo.saas-ui.dev"
                   variant="outline"
@@ -136,7 +136,7 @@ const HeroSection: React.FC = () => {
                   }
                 >
                   View demo
-                </ButtonLink>
+                </ButtonLink> */}
               </ButtonGroup>
             </FallInPlace>
           </Hero>
@@ -144,7 +144,8 @@ const HeroSection: React.FC = () => {
             height="600px"
             position="absolute"
             display={{ base: "none", lg: "block" }}
-            left={{ lg: "60%", xl: "55%" }}
+            left={{ lg: "40%", xl: "45%" }}
+            top={"5%"}
             width="80vw"
             maxW="1100px"
             margin="0 auto"
@@ -152,12 +153,13 @@ const HeroSection: React.FC = () => {
             <FallInPlace delay={1}>
               <Box overflow="hidden" height="100%">
                 <Image
-                  src="/static/screenshots/list.png"
+                  src="/static/images/midjourney-3.png"
                   layout="fixed"
-                  width={1200}
-                  height={762}
+                  width={900}
+                  height={900}
+                  style={{ borderRadius: "100%" }}
                   alt="Screenshot of a ListPage in Saas UI Pro"
-                  quality="75"
+                  quality="20"
                   priority
                 />
               </Box>
@@ -467,13 +469,13 @@ export default Home;
 export async function getStaticProps() {
   return {
     props: {
-      announcement: {
-        title: "Support us by becoming a stargazer! 🚀 ",
-        description:
-          '<img src="https://img.shields.io/github/stars/saas-js/saas-ui.svg?style=social&label=Star" />',
-        href: "https://github.com/saas-js/saas-ui",
-        action: false,
-      },
+      // announcement: {
+      //   title: "Support us by becoming a stargazer! 🚀 ",
+      //   description:
+      //     '<img src="https://img.shields.io/github/stars/saas-js/saas-ui.svg?style=social&label=Star" />',
+      //   href: "https://github.com/saas-js/saas-ui",
+      //   action: false,
+      // },
     },
   };
 }
