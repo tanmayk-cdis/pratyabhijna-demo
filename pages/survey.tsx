@@ -40,7 +40,10 @@ export const Survey: NextPage = () => {
                 Fully functional forms with React Hook Form. Data tables with React
                 Table.
             </>,
-            content: <TaskWithMCQImages save={saveTaskResponse} />
+            content: <TaskWithMCQImages
+                reference="/static/images/tasks/1.gif"
+                options={["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]}
+                save={saveTaskResponse} />
         },
         {
             title: "Third Task",
@@ -50,26 +53,33 @@ export const Survey: NextPage = () => {
                 Fully functional forms with React Hook Form. Data tables with React
                 Table.
             </>,
-            content: <motion3d.mesh
-                animate={{
-                    rotateY: ["0deg", "90deg", "180deg", "270deg", "360deg"]
-                }}
-                transition={{
-                    duration: "3",
-                    repeat: Infinity
-                }}
-            >
-                <div className="scene">
-                    <div className="cube">
-                        <div className="cube__face cube__face--front"></div>
-                        <div className="cube__face cube__face--back"></div>
-                        <div className="cube__face cube__face--right"></div>
-                        <div className="cube__face cube__face--left"></div>
-                        <div className="cube__face cube__face--top"></div>
-                        <div className="cube__face cube__face--bottom"></div>
-                    </div>
-                </div>
-            </motion3d.mesh>
+            content: <RotatingCubeTask save={saveTaskResponse} />
+        },
+        {
+            title: "Fourth Task",
+            description: <>
+                Lorem Ipsum <Em>30+ open source components</Em>.
+                Including authentication screens with Clerk, Supabase and Magic.
+                Fully functional forms with React Hook Form. Data tables with React
+                Table.
+            </>,
+            content: <TaskWithMCQImages
+                reference="/static/images/tasks/2.gif"
+                options={["/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif"]}
+                save={saveTaskResponse} />
+        },
+        {
+            title: "Fifth Task",
+            description: <>
+                Lorem Ipsum <Em>30+ open source components</Em>.
+                Including authentication screens with Clerk, Supabase and Magic.
+                Fully functional forms with React Hook Form. Data tables with React
+                Table.
+            </>,
+            content: <TaskWithMCQImages
+                reference="/static/images/tasks/3.gif"
+                options={["/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif"]}
+                save={saveTaskResponse} />
         }
     ]
 
@@ -326,20 +336,44 @@ const BlinkingBoxTask = ({
     )
 }
 
+const RotatingCubeTask = ({
+    save
+}: {
+    save: (response: number) => void
+}) => {
+    const DEFAULT_DURATION = 2
+    const [duration, setDuration] = useState(DEFAULT_DURATION)
+
+    return (
+        <TaskWithSlider
+            reference={<RotatingCube duration={duration} />}
+            response={duration}
+            setResponse={setDuration}
+            save={save}
+            defaultValue={DEFAULT_DURATION}
+            min={0.1}
+            max={5}
+            step={0.1}
+        />
+    )
+}
+
 // const RotatingCube
 
 const TaskWithMCQImages = ({
+    reference,
+    options,
     save
 }: {
     save: (response: string) => void
+    reference: string
+    options: string[]
 }) => {
-    const options = ["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]
-
     return (
         <TaskForm
             reference={
                 <Img
-                    src="/static/images/tasks/1.gif"
+                    src={reference}
                     border={"solid 2px"}
                     rounded={"md"}
                     height={"250px"}
@@ -399,13 +433,19 @@ const TaskWithSlider = ({
     save,
     response,
     setResponse,
-    defaultValue
+    defaultValue,
+    min = 0.1,
+    max = 1,
+    step = 0.05
 }: {
-    reference: ReactNode,
-    save: (response: number) => void,
+    reference: ReactNode
+    save: (response: number) => void
     response: number
     setResponse: (response: number) => void
     defaultValue: number
+    min?: number,
+    max?: number,
+    step?: number
 }) => {
     // const DEFAULT_DURATION = 0.55
     // const [duration, setDuration] = useState(DEFAULT_DURATION)
@@ -420,9 +460,9 @@ const TaskWithSlider = ({
                 >
                     <Slider
                         defaultValue={defaultValue}
-                        min={0.1}
-                        max={1}
-                        step={0.05}
+                        min={min}
+                        max={max}
+                        step={step}
                         onChange={setResponse}
                     >
                         <SliderTrack bg='purple.100'>
@@ -491,6 +531,25 @@ const useBlink = () => {
     const blink = () => animate(scope.current, { opacity: [1, 0, 1, 0, 0, 1] }, { duration: 1 })
 
     return [scope, blink]
+}
+
+const RotatingCube = ({
+    duration
+}: {
+    duration: number
+}) => {
+    return (
+        <div className="wrapper">
+            <div className="cube" style={{ animation: `spin ${duration}s infinite linear` }}>
+                <div className="one"></div>
+                <div className="two"></div>
+                <div className="three"></div>
+                <div className="four"></div>
+                <div className="five"></div>
+                <div className="six"></div>
+            </div>
+        </div>
+    )
 }
 
 export default Survey
