@@ -6,6 +6,8 @@ import { Layout } from "components/layout";
 
 import theme from "../theme";
 
+import "../styles/survey.css"
+
 function MyApp({ Component, pageProps }: AppProps) {
   const { announcement, header, footer } = pageProps;
 

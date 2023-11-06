@@ -16,19 +16,22 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/inter": "^4.5.15",
+    "@react-three/fiber": "^8.15.9",
     "@saas-ui/auth": "2.0.0-next.12",
     "@saas-ui/react": "2.0.0-next.12",
     "@svgr/webpack": "^7.0.0",
     "contentlayer": "^0.3.4",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.4",
+    "framer-motion-3d": "^10.16.4",
     "next": "13.3.1",
     "next-contentlayer": "^0.3.4",
     "next-seo": "^6.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.11.0",
-    "react-remove-scroll": "^2.5.7"
+    "react-remove-scroll": "^2.5.7",
+    "three": "^0.158.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",

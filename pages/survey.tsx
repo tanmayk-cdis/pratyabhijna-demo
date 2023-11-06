@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Heading, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, Img, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
 import { transparentize } from "@chakra-ui/theme-tools";
 import { HighlightsItem } from "components/highlights";
 import { SEO } from "components/seo";
@@ -8,9 +8,70 @@ import { NextPage } from "next";
 import { HeroSection } from "pages";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { motion, useAnimate } from "framer-motion";
+import { motion as motion3d } from "framer-motion-3d";
 
 export const Survey: NextPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [taskIndex, setTaskIndex] = useState<number | null>(null)
+
+    const saveTaskResponse = (response: string | number) => {
+        console.log("Saving Response: ", response)
+        setIsModalOpen(false)
+        console.log('works')
+    }
+
+
+    const tasks = [
+        {
+            title: "First Task",
+            description: <>
+                Get started for free with <Em>30+ open source components</Em>.
+                Including authentication screens with Clerk, Supabase and Magic.
+                Fully functional forms with React Hook Form. Data tables with React
+                Table.
+            </>,
+            content: <BlinkingBoxTask save={saveTaskResponse} />
+        },
+        {
+            title: "Second Task",
+            description: <>
+                Lorem Ipsum <Em>30+ open source components</Em>.
+                Including authentication screens with Clerk, Supabase and Magic.
+                Fully functional forms with React Hook Form. Data tables with React
+                Table.
+            </>,
+            content: <TaskWithMCQImages save={saveTaskResponse} />
+        },
+        {
+            title: "Third Task",
+            description: <>
+                Lorem Ipsum <Em>30+ open source components</Em>.
+                Including authentication screens with Clerk, Supabase and Magic.
+                Fully functional forms with React Hook Form. Data tables with React
+                Table.
+            </>,
+            content: <motion3d.mesh
+                animate={{
+                    rotateY: ["0deg", "90deg", "180deg", "270deg", "360deg"]
+                }}
+                transition={{
+                    duration: "3",
+                    repeat: Infinity
+                }}
+            >
+                <div className="scene">
+                    <div className="cube">
+                        <div className="cube__face cube__face--front"></div>
+                        <div className="cube__face cube__face--back"></div>
+                        <div className="cube__face cube__face--right"></div>
+                        <div className="cube__face cube__face--left"></div>
+                        <div className="cube__face cube__face--top"></div>
+                        <div className="cube__face cube__face--bottom"></div>
+                    </div>
+                </div>
+            </motion3d.mesh>
+        }
+    ]
 
     return (
         <Box>
@@ -20,41 +81,32 @@ export const Survey: NextPage = () => {
             />
             <Box>
                 <SurveyHero
-                    openModal={() => setIsModalOpen(true)}
-                    tasks={[
-                        {
-                            title: "First Task",
-                            description: <>
-                                Get started for free with <Em>30+ open source components</Em>.
-                                Including authentication screens with Clerk, Supabase and Magic.
-                                Fully functional forms with React Hook Form. Data tables with React
-                                Table.
-                            </>
-                        },
-                        {
-                            title: "Second Task",
-                            description: <>
-                                Lorem Ipsum <Em>30+ open source components</Em>.
-                                Including authentication screens with Clerk, Supabase and Magic.
-                                Fully functional forms with React Hook Form. Data tables with React
-                                Table.
-                            </>
-                        }
-                    ]}
+                    openModal={(taskIndex) => { setIsModalOpen(true); setTaskIndex(taskIndex); }}
+                    tasks={tasks}
                 />
             </Box>
 
-            <SurveyModal open={isModalOpen} onClosed={() => setIsModalOpen(false)} />
+            {
+                <SurveyModal
+                    open={isModalOpen}
+                    onClosed={() => setIsModalOpen(false)}
+                    task={tasks[taskIndex]}
+                    save={saveTaskResponse}
+                />
+            }
         </Box>
     );
 };
 
+type Task = {
+    title: string,
+    description: ReactNode,
+    content: ReactNode
+}
+
 type SurveyHeroProps = {
-    openModal: () => void,
-    tasks: {
-        title: string,
-        description: ReactNode
-    }[]
+    openModal: (taskIndex: number) => void,
+    tasks: Task[]
 }
 
 export const SurveyHero = ({
@@ -70,7 +122,7 @@ export const SurveyHero = ({
                         key={index}
                         title={task.title}
                         description={task.description}
-                        openModal={openModal}
+                        openModal={() => openModal(index)}
                     />
                 )
             }
@@ -81,7 +133,7 @@ export const SurveyHero = ({
 type CardProps = {
     description: ReactNode
     title: string
-    openModal: () => void
+    openModal: (taskIndex) => void
 }
 
 const Card = ({
@@ -133,27 +185,30 @@ const Card = ({
 type ModalProps = {
     onClosed: () => void
     open: boolean
+    task: Task,
+    save: (response: number) => void
 }
 
 const SurveyModal = ({
     onClosed,
-    open
+    open,
+    task
 }: ModalProps) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const DEFAULT_DURATION = 0.55
-    const [duration, setDuration] = useState(DEFAULT_DURATION)
     const [isStarterOpen, setIsStarterOpen] = useState(true)
-    const [scope, blink] = useBlink()
 
     useEffect(() => {
-        if (open) {
+        if (open)
             onOpen()
-        }
+        else
+            onClose()
     }, [open])
 
     useEffect(() => {
-        if (!isOpen)
+        if (!isOpen) {
             onClosed()
+            setIsStarterOpen(true)
+        }
     }, [isOpen])
 
     return (
@@ -164,79 +219,44 @@ const SurveyModal = ({
 
                 {/* <ModalCloseButton /> */}
 
-                <ModalBody
-                    textAlign={"center"}
-                    display={"flex"}
-                    flexDir={"column"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    padding={{
-                        lg: "20",
-                        base: "10"
-                    }}
-                >
-                    <Heading as={"h2"} size={"3xl"}>
-                        Task #1
-                    </Heading>
-                    {/* <Lorem count={2} /> */}
-
-                    <Text
-                        mt={"10"}
+                {
+                    task &&
+                    <ModalBody
+                        textAlign={"center"}
+                        display={"flex"}
+                        flexDir={"column"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        padding={{
+                            lg: "20",
+                            base: "10"
+                        }}
                     >
+                        <Heading as={"h2"} size={"3xl"}>
+                            {task.title}
+                        </Heading>
+                        {/* <Lorem count={2} /> */}
 
-                        asdfasdfasdf asd fasdf asdf asf
-                    </Text>
+                        <Text
+                            mt={"10"}
+                        >
+                            {task.description}
+                        </Text>
 
-                    {
-                        isStarterOpen
-                            ? <Button
-                                size={"lg"}
-                                colorScheme="blue"
-                                mt={"5"}
-                                onClick={() => setIsStarterOpen(false)}
-                            >
-                                Start
-                            </Button>
-                            : <Flex
-                                direction={"column"}
-                                alignItems={"center"}
-                                mt={"10"}
-                            >
-                                <BlinkingBox duration={duration} />
-
-                                <Box
-                                    mt={10}
-                                    width={"400px"}
-                                >
-                                    <Slider
-                                        defaultValue={DEFAULT_DURATION}
-                                        min={0.1}
-                                        max={1}
-                                        step={0.05}
-                                        onChange={setDuration}
-                                    >
-                                        <SliderTrack bg='purple.100'>
-                                            <Box position='relative' right={10} />
-                                            <SliderFilledTrack bg='purple.400' />
-                                        </SliderTrack>
-                                        <SliderThumb boxSize={6} />
-                                    </Slider>
-                                </Box>
-                                {
-                                    duration
-                                }
-                                <Button
+                        {
+                            isStarterOpen
+                                ? <Button
                                     size={"lg"}
-                                    mt={"20"}
-                                    colorScheme={"blue"}
-                                    ref={scope}
-                                    onClick={blink}
+                                    colorScheme="blue"
+                                    mt={"5"}
+                                    onClick={() => setIsStarterOpen(false)}
                                 >
-                                    Submit
+                                    Next
                                 </Button>
-                            </Flex>
-                    }
-                </ModalBody>
+                                : task.content
+                        }
+                    </ModalBody>
+                }
 
                 <ModalFooter>
                     <Button onClick={onClose}>Close</Button>
@@ -287,10 +307,188 @@ const BlinkingBox = ({
     )
 }
 
+const BlinkingBoxTask = ({
+    save
+}: {
+    save: (response: string | number) => void
+}) => {
+    const DEFAULT_DURATION = 0.55
+    const [duration, setDuration] = useState(DEFAULT_DURATION)
+
+    return (
+        <TaskWithSlider
+            reference={<BlinkingBox duration={duration} />}
+            response={duration}
+            setResponse={setDuration}
+            save={save}
+            defaultValue={DEFAULT_DURATION}
+        />
+    )
+}
+
+// const RotatingCube
+
+const TaskWithMCQImages = ({
+    save
+}: {
+    save: (response: string) => void
+}) => {
+    const options = ["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]
+
+    return (
+        <TaskForm
+            reference={
+                <Img
+                    src="/static/images/tasks/1.gif"
+                    border={"solid 2px"}
+                    rounded={"md"}
+                    height={"250px"}
+                    boxShadow={"0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)"}
+                    mb={"2rem"}
+                />
+            }
+            inputs={
+                <Flex
+                    gap={"1rem"}
+                >
+                    {
+                        options.map((option, index) =>
+                            <ImageOption src={option} key={index} onSelect={() => save(option)} />
+                        )
+                    }
+                </Flex>
+            }
+        />
+    )
+}
+
+const ImageOption = ({
+    src,
+    onSelect
+}: {
+    src: string
+    onSelect: () => void
+}) => {
+    const [scope, blink] = useBlink()
+
+    const select = async () => {
+        await blink()
+
+        onSelect()
+    }
+
+    return (
+        <Img
+            src={src}
+            border={"solid 2px"}
+            rounded={"md"}
+            height={"250px"}
+            boxShadow={"0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)"}
+            cursor={"pointer"}
+            _hover={{
+                borderColor: "primary.500"
+            }}
+            ref={scope}
+            onClick={select}
+        />
+    )
+}
+
+const TaskWithSlider = ({
+    reference,
+    save,
+    response,
+    setResponse,
+    defaultValue
+}: {
+    reference: ReactNode,
+    save: (response: number) => void,
+    response: number
+    setResponse: (response: number) => void
+    defaultValue: number
+}) => {
+    // const DEFAULT_DURATION = 0.55
+    // const [duration, setDuration] = useState(DEFAULT_DURATION)
+
+    return (
+        <TaskForm
+            reference={reference}
+            inputs={
+                <Box
+                    mt={10}
+                    width={"400px"}
+                >
+                    <Slider
+                        defaultValue={defaultValue}
+                        min={0.1}
+                        max={1}
+                        step={0.05}
+                        onChange={setResponse}
+                    >
+                        <SliderTrack bg='purple.100'>
+                            <Box position='relative' right={10} />
+                            <SliderFilledTrack bg='purple.400' />
+                        </SliderTrack>
+                        <SliderThumb boxSize={6} />
+                    </Slider>
+                </Box>
+            }
+            save={() => save(response)}
+        />
+    )
+}
+
+const TaskForm = ({
+    reference,
+    inputs,
+    save
+}: {
+    reference: ReactNode,
+    inputs: ReactNode,
+    save?: (() => void)
+}) => {
+    const [scope, blink] = useBlink()
+
+    const buttonClick = async () => {
+        await blink()
+
+        if (save) save()
+    }
+
+    return (
+        <Flex
+            direction={"column"}
+            alignItems={"center"}
+            mt={"10"}
+        >
+            {
+                reference
+            }
+
+            {
+                inputs
+            }
+
+            {
+                save &&
+                <Button
+                    size={"lg"}
+                    mt={"20"}
+                    colorScheme={"blue"}
+                    ref={scope}
+                    onClick={buttonClick}
+                >
+                    Submit
+                </Button>
+            }
+        </Flex >
+    )
+}
+
 const useBlink = () => {
     const [scope, animate] = useAnimate()
 
-    const blink = () => animate(scope.current, { opacity: [0, 0, 1, 0, 1, 0, 1] }, { duration: 1.5 })
+    const blink = () => animate(scope.current, { opacity: [1, 0, 1, 0, 0, 1] }, { duration: 1 })
 
     return [scope, blink]
 }
