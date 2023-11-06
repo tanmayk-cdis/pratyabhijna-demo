@@ -7,7 +7,7 @@ import { Em } from "components/typography";
 import { NextPage } from "next";
 import { HeroSection } from "pages";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useAnimate } from "framer-motion";
 
 export const Survey: NextPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -15,11 +15,33 @@ export const Survey: NextPage = () => {
     return (
         <Box>
             <SEO
-                title="Saas UI Landingspage"
-                description="Free SaaS landingspage starter kit"
+                title="Survey"
+            // description="Free SaaS landingspage starter kit"
             />
             <Box>
-                <SurveyHero openModal={() => setIsModalOpen(true)} />
+                <SurveyHero
+                    openModal={() => setIsModalOpen(true)}
+                    tasks={[
+                        {
+                            title: "First Task",
+                            description: <>
+                                Get started for free with <Em>30+ open source components</Em>.
+                                Including authentication screens with Clerk, Supabase and Magic.
+                                Fully functional forms with React Hook Form. Data tables with React
+                                Table.
+                            </>
+                        },
+                        {
+                            title: "Second Task",
+                            description: <>
+                                Lorem Ipsum <Em>30+ open source components</Em>.
+                                Including authentication screens with Clerk, Supabase and Magic.
+                                Fully functional forms with React Hook Form. Data tables with React
+                                Table.
+                            </>
+                        }
+                    ]}
+                />
             </Box>
 
             <SurveyModal open={isModalOpen} onClosed={() => setIsModalOpen(false)} />
@@ -28,27 +50,30 @@ export const Survey: NextPage = () => {
 };
 
 type SurveyHeroProps = {
-    openModal: () => void
+    openModal: () => void,
+    tasks: {
+        title: string,
+        description: ReactNode
+    }[]
 }
 
 export const SurveyHero = ({
-    openModal
+    openModal,
+    tasks
 }: SurveyHeroProps) => {
 
     return (
-        <Container maxW="container.xl" pt={{ base: 40, lg: 60 }} pb="40">
-            <Card
-                title="First Task"
-                description={
-                    <>
-                        Get started for free with <Em>30+ open source components</Em>.
-                        Including authentication screens with Clerk, Supabase and Magic.
-                        Fully functional forms with React Hook Form. Data tables with React
-                        Table.
-                    </>
-                }
-                openModal={openModal}
-            />
+        <Container maxW="container.xl" pt={{ base: 40, lg: 32 }} pb="40" display={"flex"} flexDir={"column"} gap={"10"}>
+            {
+                tasks.map((task, index) =>
+                    <Card
+                        key={index}
+                        title={task.title}
+                        description={task.description}
+                        openModal={openModal}
+                    />
+                )
+            }
         </Container>
     )
 }
@@ -117,6 +142,8 @@ const SurveyModal = ({
     const { isOpen, onOpen, onClose } = useDisclosure()
     const DEFAULT_DURATION = 0.55
     const [duration, setDuration] = useState(DEFAULT_DURATION)
+    const [isStarterOpen, setIsStarterOpen] = useState(true)
+    const [scope, blink] = useBlink()
 
     useEffect(() => {
         if (open) {
@@ -137,7 +164,17 @@ const SurveyModal = ({
 
                 {/* <ModalCloseButton /> */}
 
-                <ModalBody textAlign={"center"} justifyContent={"center"} padding={{ lg: "28", base: "10" }}>
+                <ModalBody
+                    textAlign={"center"}
+                    display={"flex"}
+                    flexDir={"column"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    padding={{
+                        lg: "20",
+                        base: "10"
+                    }}
+                >
                     <Heading as={"h2"} size={"3xl"}>
                         Task #1
                     </Heading>
@@ -150,45 +187,55 @@ const SurveyModal = ({
                         asdfasdfasdf asd fasdf asdf asf
                     </Text>
 
-                    <Button
-                        size={"lg"}
-                        colorScheme="blue"
-                        mt={"5"}>
-                        Start
-                    </Button>
-
-                    <Flex
-                        direction={"column"}
-                        alignItems={"center"}
-                        mt={"10"}
-                    >
-                        <BlinkingBox duration={duration} />
-
-                        <Box
-                            mt={10}
-                            width={"50%"}
-                        >
-                            <Slider
-                                defaultValue={DEFAULT_DURATION}
-                                min={0.1}
-                                max={1}
-                                step={0.05}
-                                onChange={setDuration}
+                    {
+                        isStarterOpen
+                            ? <Button
+                                size={"lg"}
+                                colorScheme="blue"
+                                mt={"5"}
+                                onClick={() => setIsStarterOpen(false)}
                             >
-                                <SliderTrack bg='purple.100'>
-                                    <Box position='relative' right={10} />
-                                    <SliderFilledTrack bg='purple.400' />
-                                </SliderTrack>
-                                <SliderThumb boxSize={6} />
-                            </Slider>
-                        </Box>
-                        {
-                            duration
-                        }
-                        <Button size={"lg"} mt={"20"}>
-                            Submit
-                        </Button>
-                    </Flex>
+                                Start
+                            </Button>
+                            : <Flex
+                                direction={"column"}
+                                alignItems={"center"}
+                                mt={"10"}
+                            >
+                                <BlinkingBox duration={duration} />
+
+                                <Box
+                                    mt={10}
+                                    width={"400px"}
+                                >
+                                    <Slider
+                                        defaultValue={DEFAULT_DURATION}
+                                        min={0.1}
+                                        max={1}
+                                        step={0.05}
+                                        onChange={setDuration}
+                                    >
+                                        <SliderTrack bg='purple.100'>
+                                            <Box position='relative' right={10} />
+                                            <SliderFilledTrack bg='purple.400' />
+                                        </SliderTrack>
+                                        <SliderThumb boxSize={6} />
+                                    </Slider>
+                                </Box>
+                                {
+                                    duration
+                                }
+                                <Button
+                                    size={"lg"}
+                                    mt={"20"}
+                                    colorScheme={"blue"}
+                                    ref={scope}
+                                    onClick={blink}
+                                >
+                                    Submit
+                                </Button>
+                            </Flex>
+                    }
                 </ModalBody>
 
                 <ModalFooter>
@@ -238,6 +285,14 @@ const BlinkingBox = ({
             }
         </Box>
     )
+}
+
+const useBlink = () => {
+    const [scope, animate] = useAnimate()
+
+    const blink = () => animate(scope.current, { opacity: [0, 0, 1, 0, 1, 0, 1] }, { duration: 1.5 })
+
+    return [scope, blink]
 }
 
 export default Survey

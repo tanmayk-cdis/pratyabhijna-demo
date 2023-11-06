@@ -65,7 +65,7 @@ const Home: NextPage = () => {
   return (
     <Box>
       <SEO
-        title="Saas UI Landingspage"
+        title="Cognitive Ability Test"
         description="Free SaaS landingspage starter kit"
       />
       <Box>
@@ -115,7 +115,7 @@ export const HeroSection: React.FC = () => {
               </HStack>
 
               <ButtonGroup spacing={4} alignItems="center">
-                <ButtonLink colorScheme="primary" size="lg" href="/signup">
+                <ButtonLink colorScheme="primary" size="lg" href="/survey">
                   Start
                 </ButtonLink>
                 {/* <ButtonLink
