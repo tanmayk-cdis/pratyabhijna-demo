@@ -7,12 +7,12 @@ import { Em } from "components/typography";
 import { NextPage } from "next";
 import { HeroSection } from "pages";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { motion, useAnimate } from "framer-motion";
+import { AnimationScope, motion, useAnimate } from "framer-motion";
 import { motion as motion3d } from "framer-motion-3d";
 
 export const Survey: NextPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-    const [taskIndex, setTaskIndex] = useState<number | null>(null)
+    const [taskIndex, setTaskIndex] = useState<number>(0)
 
     const saveTaskResponse = (response: string | number) => {
         console.log("Saving Response: ", response)
@@ -525,7 +525,7 @@ const TaskForm = ({
     )
 }
 
-const useBlink = () => {
+const useBlink = (): [AnimationScope, () => void] => {
     const [scope, animate] = useAnimate()
 
     const blink = () => animate(scope.current, { opacity: [1, 0, 1, 0, 0, 1] }, { duration: 1 })

@@ -3,7 +3,7 @@ import NextLink, { LinkProps } from 'next/link'
 
 export type ButtonLinkProps = LinkProps & ButtonProps
 
-export const ButtonLink: React.FC<ButtonLinkProps> = ({
+export const ButtonLink = ({
   href,
   children,
   ...props

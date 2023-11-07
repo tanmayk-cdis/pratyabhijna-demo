@@ -32,6 +32,7 @@ const siteConfig = {
       //   href: '/login',
       // },
       {
+        id: "signup",
         label: 'Log In / Sign Up',
         href: '/signup',
         variant: 'primary',
