@@ -17,6 +17,12 @@ import {
   IconButton,
   VStack,
   Flex,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { SEO } from "components/seo/seo";
 
@@ -61,12 +67,14 @@ import {
   HighlightsTestimonialItem,
 } from "components/highlights";
 
+import ConsentForm from "./consent-form.mdx"
+
 const Home: NextPage = () => {
   return (
     <Box>
       <SEO
-        title="Cognitive Ability Test"
-        description="Free SaaS landingspage starter kit"
+        title="Pratyabhijna"
+        description="World’s largest study on mental imagery."
       />
       <Box>
         <HeroSection />
@@ -86,6 +94,8 @@ const Home: NextPage = () => {
 };
 
 export const HeroSection: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+
   return (
     <Box position="relative" overflow="hidden">
       <BackgroundGradient height="100%" />
@@ -97,49 +107,29 @@ export const HeroSection: React.FC = () => {
             px="0"
             title={
               <FallInPlace>
-                Cognitive Ability
-                <Br /> Survey
+                Pratyabhijna
               </FallInPlace>
             }
             description={
               <FallInPlace delay={0.4} fontWeight="medium">
-                Saas UI is a <Em>React component library</Em>
-                <Br /> that doesn&apos;t get in your way and helps you <Br />{" "}
-                build intuitive SaaS products with speed.
+                World’s largest study on mental imagery.
               </FallInPlace>
             }
           >
-            <FallInPlace delay={0.8}>
-              <HStack pt="4" pb="12" spacing="8">
-                <NextjsLogo height="28px" /> <ChakraLogo height="20px" />
-              </HStack>
-
+            <FallInPlace delay={0.8} mt={4}>
               <ButtonGroup spacing={4} alignItems="center">
-                <ButtonLink colorScheme="primary" size="lg" href="/survey">
+                {/* <ButtonLink colorScheme="primary" size="lg" href="/survey"> */}
+                {/* Start */}
+                {/* </ButtonLink> */}
+                <Button colorScheme="primary" size="lg" onClick={() => setIsModalOpen(true)}>
                   Start
-                </ButtonLink>
-                {/* <ButtonLink
-                  size="lg"
-                  href="https://demo.saas-ui.dev"
-                  variant="outline"
-                  rightIcon={
-                    <Icon
-                      as={FiArrowRight}
-                      sx={{
-                        transitionProperty: "common",
-                        transitionDuration: "normal",
-                        ".chakra-button:hover &": {
-                          transform: "translate(5px)",
-                        },
-                      }}
-                    />
-                  }
-                >
-                  View demo
-                </ButtonLink> */}
+                </Button>
               </ButtonGroup>
             </FallInPlace>
           </Hero>
+
+          <ConsentModal onClosed={() => 21} open={isModalOpen} save={() => 2} />
+
           <Box
             height="600px"
             position="absolute"
@@ -169,6 +159,7 @@ export const HeroSection: React.FC = () => {
       </Container>
 
       <Features
+        visibility={"hidden"}
         id="benefits"
         columns={[1, 2, 4]}
         iconSize={4}
@@ -478,4 +469,99 @@ export async function getStaticProps() {
       // },
     },
   };
+}
+
+type ConsentModalProps = {
+  onClosed: () => void
+  open: boolean,
+  save: () => void
+}
+
+const ConsentModal = ({
+  onClosed,
+  open,
+  save
+}: ConsentModalProps) => {
+  return (
+    <InfoModal
+      onClosed={onClosed}
+      open={open}
+      title="Test"
+      contents={
+        <div className="markdown">
+          <ConsentForm />
+        </div>
+      }
+      save={save}
+    />
+  )
+}
+
+type ModalProps = {
+  onClosed: () => void
+  open: boolean,
+  title: string,
+  contents: React.ReactNode,
+  save: () => void
+}
+
+const InfoModal = ({
+  onClosed,
+  open,
+  title,
+  contents,
+  save
+}: ModalProps) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  React.useEffect(() => {
+    if (open)
+      onOpen()
+    else
+      onClose()
+  }, [open])
+
+  React.useEffect(() => {
+    if (!isOpen) {
+      onClosed()
+    }
+  }, [isOpen])
+
+  return (
+    <Modal onClose={onClose} size={"full"} isOpen={isOpen}>
+      <ModalOverlay />
+      <ModalContent>
+        {/* <ModalHeader>Modal Title</ModalHeader> */}
+
+        {/* <ModalCloseButton /> */}
+
+        <ModalBody
+          textAlign={"center"}
+          display={"flex"}
+          flexDir={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          padding={{
+            lg: "20",
+            base: "10"
+          }}
+        >
+          <Heading as={"h2"} size={"3xl"}>
+            {title}
+          </Heading>
+          {/* <Lorem count={2} /> */}
+
+          <Text
+            mt={"10"}
+          >
+            {contents}
+          </Text>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button onClick={onClose}>Close</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
 }

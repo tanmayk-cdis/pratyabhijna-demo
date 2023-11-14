@@ -345,16 +345,18 @@ const RotatingCubeTask = ({
     const [duration, setDuration] = useState(DEFAULT_DURATION)
 
     return (
-        <TaskWithSlider
-            reference={<RotatingCube duration={duration} />}
-            response={duration}
-            setResponse={setDuration}
-            save={save}
-            defaultValue={DEFAULT_DURATION}
-            min={0.1}
-            max={5}
-            step={0.1}
-        />
+        <>
+            <TaskWithSlider
+                reference={<RotatingCube duration={duration + 1.5} />}
+                response={duration}
+                setResponse={setDuration}
+                save={save}
+                defaultValue={DEFAULT_DURATION}
+                min={1}
+                max={4}
+                step={0.1}
+            />
+        </>
     )
 }
 
@@ -463,7 +465,7 @@ const TaskWithSlider = ({
                         min={min}
                         max={max}
                         step={step}
-                        onChange={setResponse}
+                        onChange={value => setResponse(max - value)}
                     >
                         <SliderTrack bg='purple.100'>
                             <Box position='relative' right={10} />
