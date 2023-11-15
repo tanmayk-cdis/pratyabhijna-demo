@@ -8,7 +8,8 @@ import { NextPage } from "next";
 import { HeroSection } from "pages";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { AnimationScope, motion, useAnimate } from "framer-motion";
-import { motion as motion3d } from "framer-motion-3d";
+
+import FlickerTaskDescription from "components/survey/content/flicker-task/description.mdx"
 
 export const Survey: NextPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -23,13 +24,8 @@ export const Survey: NextPage = () => {
 
     const tasks = [
         {
-            title: "First Task",
-            description: <>
-                Get started for free with <Em>30+ open source components</Em>.
-                Including authentication screens with Clerk, Supabase and Magic.
-                Fully functional forms with React Hook Form. Data tables with React
-                Table.
-            </>,
+            title: "The Flicker Task",
+            description: <FlickerTaskDescription />,
             content: <BlinkingBoxTask save={saveTaskResponse} />
         },
         {
@@ -43,7 +39,8 @@ export const Survey: NextPage = () => {
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/1.gif"
                 options={["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]}
-                save={saveTaskResponse} />
+                save={saveTaskResponse}
+            />
         },
         {
             title: "Third Task",
@@ -66,7 +63,8 @@ export const Survey: NextPage = () => {
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/2.gif"
                 options={["/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif"]}
-                save={saveTaskResponse} />
+                save={saveTaskResponse}
+            />
         },
         {
             title: "Fifth Task",
@@ -79,7 +77,8 @@ export const Survey: NextPage = () => {
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/3.gif"
                 options={["/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif"]}
-                save={saveTaskResponse} />
+                save={saveTaskResponse}
+            />
         }
     ]
 

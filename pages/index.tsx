@@ -23,6 +23,7 @@ import {
   ModalContent,
   ModalBody,
   ModalFooter,
+  Checkbox,
 } from "@chakra-ui/react";
 import { SEO } from "components/seo/seo";
 
@@ -68,6 +69,8 @@ import {
 } from "components/highlights";
 
 import ConsentForm from "./consent-form.mdx"
+import Disclaimer from "./discalimer.mdx"
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   return (
@@ -94,7 +97,14 @@ const Home: NextPage = () => {
 };
 
 export const HeroSection: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [isConsentOpen, setIsConsentOpen] = React.useState(false)
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = React.useState(false)
+  const router = useRouter()
+
+  const saveConsent = () => {
+    setIsConsentOpen(false)
+    setIsDisclaimerOpen(true)
+  }
 
   return (
     <Box position="relative" overflow="hidden">
@@ -121,14 +131,16 @@ export const HeroSection: React.FC = () => {
                 {/* <ButtonLink colorScheme="primary" size="lg" href="/survey"> */}
                 {/* Start */}
                 {/* </ButtonLink> */}
-                <Button colorScheme="primary" size="lg" onClick={() => setIsModalOpen(true)}>
+                <Button colorScheme="primary" size="lg" onClick={() => setIsConsentOpen(true)}>
                   Start
                 </Button>
               </ButtonGroup>
             </FallInPlace>
           </Hero>
 
-          <ConsentModal onClosed={() => 21} open={isModalOpen} save={() => 2} />
+          <ConsentModal onClosed={() => setIsConsentOpen(false)} open={isConsentOpen} save={saveConsent} />
+
+          <DisclaimerModal onClosed={() => setIsDisclaimerOpen(false)} open={isDisclaimerOpen} save={() => router.push('/survey')} />
 
           <Box
             height="600px"
@@ -482,17 +494,56 @@ const ConsentModal = ({
   open,
   save
 }: ConsentModalProps) => {
+  const [checked, setChecked] = React.useState(false)
+
   return (
     <InfoModal
       onClosed={onClosed}
       open={open}
-      title="Test"
+      title="Informed Consent Form"
       contents={
-        <div className="markdown">
+        <Container maxW={"container.md"} className="markdown">
           <ConsentForm />
-        </div>
+
+          <Box>
+            <Checkbox borderColor={"purple.500"} defaultChecked={checked} onChange={(e) => setChecked(e.target.checked)}>
+              I have read the information listed above. I am above 18 years old, and I can provide consent for my data being used confedentially for research purposes in this Imagination Project.
+            </Checkbox>
+          </Box>
+
+          <Flex justify={"center"}>
+            <Button colorScheme="primary" mt={"10"} isDisabled={!checked} onClick={save}>
+              Save and Continue
+            </Button>
+          </Flex>
+        </Container>
       }
-      save={save}
+    />
+  )
+}
+
+const DisclaimerModal = ({
+  onClosed,
+  open,
+  save
+}: ConsentModalProps) => {
+
+  return (
+    <InfoModal
+      onClosed={onClosed}
+      open={open}
+      title="How to do this study?"
+      contents={
+        <Container maxW={"container.md"} className="markdown">
+          <Disclaimer />
+
+          <Flex justify={"center"}>
+            <Button colorScheme="primary" mt={"10"} onClick={save}>
+              START
+            </Button>
+          </Flex>
+        </Container>
+      }
     />
   )
 }
@@ -501,16 +552,14 @@ type ModalProps = {
   onClosed: () => void
   open: boolean,
   title: string,
-  contents: React.ReactNode,
-  save: () => void
+  contents: React.ReactNode
 }
 
 const InfoModal = ({
   onClosed,
   open,
   title,
-  contents,
-  save
+  contents
 }: ModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -536,7 +585,6 @@ const InfoModal = ({
         {/* <ModalCloseButton /> */}
 
         <ModalBody
-          textAlign={"center"}
           display={"flex"}
           flexDir={"column"}
           justifyContent={"center"}
@@ -546,7 +594,7 @@ const InfoModal = ({
             base: "10"
           }}
         >
-          <Heading as={"h2"} size={"3xl"}>
+          <Heading as={"h2"} size={"3xl"} textAlign={"center"}>
             {title}
           </Heading>
           {/* <Lorem count={2} /> */}
