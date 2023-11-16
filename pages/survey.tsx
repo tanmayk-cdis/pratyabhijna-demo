@@ -1,85 +1,138 @@
-import { Box, Button, Container, Flex, Heading, Img, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, Image, Img, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
 import { transparentize } from "@chakra-ui/theme-tools";
 import { HighlightsItem } from "components/highlights";
 import { SEO } from "components/seo";
-import { Testimonial } from "components/testimonials";
-import { Em } from "components/typography";
 import { NextPage } from "next";
 import { HeroSection } from "pages";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { AnimationScope, motion, useAnimate } from "framer-motion";
 
 import FlickerTaskDescription from "components/survey/content/flicker-task/description.mdx"
+import FlickerTaskPremise1 from "components/survey/content/flicker-task/premise-1.mdx"
+import FlickerTaskPremise2 from "components/survey/content/flicker-task/premise-2.mdx"
+
+type TaskDataType = {
+    startTime?: number,
+    endTime?: number,
+    result?: number | string,
+    duration?: number,
+    resolution?: {
+        w: number,
+        h: number
+    },
+}
+
+type TaskDataListType = { [id: number]: TaskDataType }
 
 export const Survey: NextPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [taskIndex, setTaskIndex] = useState<number>(0)
+    const [taskDataList, setTaskDataList] = useState<TaskDataListType>({})
 
     const saveTaskResponse = (response: string | number) => {
-        console.log("Saving Response: ", response)
+        setResponse(response)
+
         setIsModalOpen(false)
-        console.log('works')
     }
+
+    const setStartTime = () => {
+        let taskData = taskDataList[taskIndex + 1]
+
+        setTaskDataList({
+            ...taskDataList,
+            [taskIndex + 1]: {
+                ...taskData,
+                startTime: (new Date).getTime()
+            }
+        })
+    }
+
+    const setResponse = response => {
+        let taskData = taskDataList[taskIndex + 1]
+        let endTime = (new Date()).getTime()
+
+        setTaskDataList({
+            ...taskDataList,
+            [taskIndex + 1]: {
+                ...taskData,
+                result: response,
+                endTime: endTime,
+                duration: (endTime - (taskData.startTime ?? endTime)),
+                resolution: {
+                    w: screen.width,
+                    h: screen.height
+                }
+            }
+        })
+    }
+
+    useEffect(() => {
+        console.log(taskDataList)
+    }, [taskDataList])
 
 
     const tasks = [
         {
             title: "The Flicker Task",
             description: <FlickerTaskDescription />,
+            premises: [
+                <FlickerTaskPremise1 />,
+                <FlickerTaskPremise2 />
+            ],
             content: <BlinkingBoxTask save={saveTaskResponse} />
         },
-        {
-            title: "Second Task",
-            description: <>
-                Lorem Ipsum <Em>30+ open source components</Em>.
-                Including authentication screens with Clerk, Supabase and Magic.
-                Fully functional forms with React Hook Form. Data tables with React
-                Table.
-            </>,
-            content: <TaskWithMCQImages
-                reference="/static/images/tasks/1.gif"
-                options={["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]}
-                save={saveTaskResponse}
-            />
-        },
-        {
-            title: "Third Task",
-            description: <>
-                Lorem Ipsum <Em>30+ open source components</Em>.
-                Including authentication screens with Clerk, Supabase and Magic.
-                Fully functional forms with React Hook Form. Data tables with React
-                Table.
-            </>,
-            content: <RotatingCubeTask save={saveTaskResponse} />
-        },
-        {
-            title: "Fourth Task",
-            description: <>
-                Lorem Ipsum <Em>30+ open source components</Em>.
-                Including authentication screens with Clerk, Supabase and Magic.
-                Fully functional forms with React Hook Form. Data tables with React
-                Table.
-            </>,
-            content: <TaskWithMCQImages
-                reference="/static/images/tasks/2.gif"
-                options={["/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif"]}
-                save={saveTaskResponse}
-            />
-        },
-        {
-            title: "Fifth Task",
-            description: <>
-                Lorem Ipsum <Em>30+ open source components</Em>.
-                Including authentication screens with Clerk, Supabase and Magic.
-                Fully functional forms with React Hook Form. Data tables with React
-                Table.
-            </>,
-            content: <TaskWithMCQImages
-                reference="/static/images/tasks/3.gif"
-                options={["/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif"]}
-                save={saveTaskResponse}
-            />
-        }
+        // {
+        //     title: "Second Task",
+        //     description: <>
+        //         Lorem Ipsum <Em>30+ open source components</Em>.
+        //         Including authentication screens with Clerk, Supabase and Magic.
+        //         Fully functional forms with React Hook Form. Data tables with React
+        //         Table.
+        //     </>,
+        //     content: <TaskWithMCQImages
+        //         reference="/static/images/tasks/1.gif"
+        //         options={["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]}
+        //         save={saveTaskResponse}
+        //     />
+        // },
+        // {
+        //     title: "Third Task",
+        //     description: <>
+        //         Lorem Ipsum <Em>30+ open source components</Em>.
+        //         Including authentication screens with Clerk, Supabase and Magic.
+        //         Fully functional forms with React Hook Form. Data tables with React
+        //         Table.
+        //     </>,
+        //     content: <RotatingCubeTask save={saveTaskResponse} />
+        // },
+        // {
+        //     title: "Fourth Task",
+        //     description: <>
+        //         Lorem Ipsum <Em>30+ open source components</Em>.
+        //         Including authentication screens with Clerk, Supabase and Magic.
+        //         Fully functional forms with React Hook Form. Data tables with React
+        //         Table.
+        //     </>,
+        //     content: <TaskWithMCQImages
+        //         reference="/static/images/tasks/2.gif"
+        //         options={["/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif"]}
+        //         save={saveTaskResponse}
+        //     />
+        // },
+        // {
+        //     title: "Fifth Task",
+        //     description: <>
+        //         Lorem Ipsum <Em>30+ open source components</Em>.
+        //         Including authentication screens with Clerk, Supabase and Magic.
+        //         Fully functional forms with React Hook Form. Data tables with React
+        //         Table.
+        //     </>,
+        //     content: <TaskWithMCQImages
+        //         reference="/static/images/tasks/3.gif"
+        //         options={["/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif"]}
+        //         save={saveTaskResponse}
+        //     />
+        // }
     ]
 
     return (
@@ -91,6 +144,7 @@ export const Survey: NextPage = () => {
             <Box>
                 <SurveyHero
                     openModal={(taskIndex) => { setIsModalOpen(true); setTaskIndex(taskIndex); }}
+                    taskDataList={taskDataList}
                     tasks={tasks}
                 />
             </Box>
@@ -100,7 +154,7 @@ export const Survey: NextPage = () => {
                     open={isModalOpen}
                     onClosed={() => setIsModalOpen(false)}
                     task={tasks[taskIndex]}
-                    save={saveTaskResponse}
+                    start={setStartTime}
                 />
             }
         </Box>
@@ -110,17 +164,20 @@ export const Survey: NextPage = () => {
 type Task = {
     title: string,
     description: ReactNode,
+    premises: ReactNode[],
     content: ReactNode
 }
 
 type SurveyHeroProps = {
     openModal: (taskIndex: number) => void,
-    tasks: Task[]
+    tasks: Task[],
+    taskDataList: TaskDataListType
 }
 
 export const SurveyHero = ({
     openModal,
-    tasks
+    tasks,
+    taskDataList
 }: SurveyHeroProps) => {
 
     return (
@@ -131,6 +188,7 @@ export const SurveyHero = ({
                         key={index}
                         title={task.title}
                         description={task.description}
+                        completed={Boolean(taskDataList[index + 1] && taskDataList[index + 1].result)}
                         openModal={() => openModal(index)}
                     />
                 )
@@ -143,12 +201,14 @@ type CardProps = {
     description: ReactNode
     title: string
     openModal: (taskIndex) => void
+    completed: boolean
 }
 
 const Card = ({
     title,
     description,
-    openModal
+    openModal,
+    completed
 }: CardProps) => {
     const gradient = ["primary.500", "secondary.500"]
     const theme = useTheme();
@@ -175,18 +235,26 @@ const Card = ({
                 _dark={{ opacity: 0.5, filter: "blur(50px)" }}
             />
 
-            <Text color="muted" fontSize="xl">
+            <div>
                 {description}
-            </Text>
+            </div>
 
-            <Button
-                alignSelf={"end"}
-                size={"lg"}
-                colorScheme={"blue"}
-                onClick={openModal}
-            >
-                Start
-            </Button>
+            {
+                completed
+                    ? <Image
+                        src="/static/images/check.svg"
+                        height={"16"}
+                        alignSelf={"end"}
+                    />
+                    : <Button
+                        alignSelf={"end"}
+                        size={"lg"}
+                        colorScheme={"blue"}
+                        onClick={openModal}
+                    >
+                        Start
+                    </Button>
+            }
         </HighlightsItem>
     )
 }
@@ -195,16 +263,27 @@ type ModalProps = {
     onClosed: () => void
     open: boolean
     task: Task,
-    save: (response: number) => void
+    start: () => void
 }
 
 const SurveyModal = ({
     onClosed,
     open,
-    task
+    task,
+    start
 }: ModalProps) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [isStarterOpen, setIsStarterOpen] = useState(true)
+    const [activePremise, setActivePremise] = useState<number | null>(0)
+
+    const nextPremise = () => {
+        if (activePremise == (task.premises.length - 1)) {
+            setActivePremise(null)
+            start()
+        }
+        else if (activePremise != null)
+            setActivePremise(activePremise + 1)
+    }
 
     useEffect(() => {
         if (open)
@@ -216,7 +295,8 @@ const SurveyModal = ({
     useEffect(() => {
         if (!isOpen) {
             onClosed()
-            setIsStarterOpen(true)
+            // setIsStarterOpen(true)
+            setActivePremise(0)
         }
     }, [isOpen])
 
@@ -231,7 +311,6 @@ const SurveyModal = ({
                 {
                     task &&
                     <ModalBody
-                        textAlign={"center"}
                         display={"flex"}
                         flexDir={"column"}
                         justifyContent={"center"}
@@ -241,29 +320,37 @@ const SurveyModal = ({
                             base: "10"
                         }}
                     >
-                        <Heading as={"h2"} size={"3xl"}>
-                            {task.title}
-                        </Heading>
-                        {/* <Lorem count={2} /> */}
 
-                        <Text
-                            mt={"10"}
-                        >
-                            {task.description}
-                        </Text>
+                        <Container maxW={"container.md"} className="markdown">
+                            <Heading as={"h2"} size={"3xl"} textAlign={"center"}>
+                                {task.title}
+                            </Heading>
+                            {/* <Lorem count={2} /> */}
 
-                        {
-                            isStarterOpen
-                                ? <Button
-                                    size={"lg"}
-                                    colorScheme="blue"
-                                    mt={"5"}
-                                    onClick={() => setIsStarterOpen(false)}
-                                >
-                                    Next
-                                </Button>
-                                : task.content
-                        }
+                            {
+                                activePremise != null
+                                    ? <>
+                                        <Text
+                                            mt={"10"}
+                                        >
+                                            {task.premises[activePremise]}
+                                        </Text>
+
+                                        <Flex justify={"center"}>
+                                            <Button
+                                                size={"lg"}
+                                                colorScheme="blue"
+                                                mt={"5"}
+                                                onClick={nextPremise}
+                                            >
+                                                Next
+                                            </Button>
+                                        </Flex>
+                                    </>
+                                    : task.content
+
+                            }
+                        </Container>
                     </ModalBody>
                 }
 
