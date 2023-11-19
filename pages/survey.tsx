@@ -6,20 +6,32 @@ import { NextPage } from "next";
 import { HeroSection } from "pages";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { AnimationScope, motion, useAnimate } from "framer-motion";
+import { getTasks, saveTask } from "services/task"
 
 import FlickerTaskDescription from "components/survey/content/flicker-task/description.mdx"
 import FlickerTaskPremise1 from "components/survey/content/flicker-task/premise-1.mdx"
 import FlickerTaskPremise2 from "components/survey/content/flicker-task/premise-2.mdx"
 
-type TaskDataType = {
-    startTime?: number,
+import RotationTaskDescription from "components/survey/content/rotation-task/description.mdx"
+import RotationTaskPremise1 from "components/survey/content/rotation-task/premise-1.mdx"
+import RotationTaskPremise2 from "components/survey/content/rotation-task/premise-2.mdx"
+
+import DancingTaskDescription from "components/survey/content/dancing-task/description.mdx"
+import DancingTaskPremise1 from "components/survey/content/dancing-task/premise-1.mdx"
+
+import YogaTaskDescription from "components/survey/content/yoga-task/description.mdx"
+import YogaTaskPremise1 from "components/survey/content/yoga-task/premise-1.mdx"
+
+import RoadTaskDescription from "components/survey/content/follow-the-road-task/description.mdx"
+import RoadTaskPremise1 from "components/survey/content/follow-the-road-task/premise-1.mdx"
+
+export type TaskDataType = {
+    id?: number
+    startTime?: number | string,
     endTime?: number,
-    result?: number | string,
-    duration?: number,
-    resolution?: {
-        w: number,
-        h: number
-    },
+    result?: number | string
+    screen_width?: number,
+    screen_height?: number
 }
 
 type TaskDataListType = { [id: number]: TaskDataType }
@@ -28,6 +40,7 @@ export const Survey: NextPage = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [taskIndex, setTaskIndex] = useState<number>(0)
     const [taskDataList, setTaskDataList] = useState<TaskDataListType>({})
+    const [savedTaskList, setSavedTaskList] = useState<TaskDataType[]>([])
 
     const saveTaskResponse = (response: string | number) => {
         setResponse(response)
@@ -36,39 +49,61 @@ export const Survey: NextPage = () => {
     }
 
     const setStartTime = () => {
-        let taskData = taskDataList[taskIndex + 1]
-
-        setTaskDataList({
-            ...taskDataList,
-            [taskIndex + 1]: {
-                ...taskData,
-                startTime: (new Date).getTime()
-            }
+        appendTaskData({
+            startTime: (new Date).getTime()
         })
     }
 
     const setResponse = response => {
-        let taskData = taskDataList[taskIndex + 1]
-        let endTime = (new Date()).getTime()
-
-        setTaskDataList({
-            ...taskDataList,
-            [taskIndex + 1]: {
-                ...taskData,
-                result: response,
-                endTime: endTime,
-                duration: (endTime - (taskData.startTime ?? endTime)),
-                resolution: {
-                    w: screen.width,
-                    h: screen.height
-                }
-            }
+        let taskData = appendTaskData({
+            result: response,
+            endTime: (new Date()).getTime(),
+            screen_width: screen.width,
+            screen_height: screen.height
         })
+
+        saveTask(taskData)
+            .then(() => console.log("Task saved successfully."))
+            .catch(() => console.log("Unable to save Task."))
+            .finally(getTaskList)
+    }
+
+    const getTaskList = async () => {
+        let taskList: TaskDataType[] = []
+        await getTasks().then(response => taskList = response.data)
+
+        taskList = taskList.map(task => {
+            task.startTime = (new Date(task.startTime)).getTime()
+            task.endTime = (new Date(task.endTime)).getTime()
+
+            return task
+        })
+
+        setSavedTaskList(taskList)
+    }
+
+    const appendTaskData = (taskData: TaskDataType) => {
+        let taskDataIndex = savedTaskList.findIndex(task => task.id == (taskIndex + 1))
+
+        let freshTaskData = {
+            ...savedTaskList[taskDataIndex],
+            ...taskData
+        }
+
+        savedTaskList[taskDataIndex] = freshTaskData
+
+        setSavedTaskList([...savedTaskList])
+
+        return freshTaskData
     }
 
     useEffect(() => {
-        console.log(taskDataList)
+        // console.log(taskDataList)
     }, [taskDataList])
+
+    useEffect(() => {
+        getTaskList()
+    }, [])
 
 
     const tasks = [
@@ -81,58 +116,51 @@ export const Survey: NextPage = () => {
             ],
             content: <BlinkingBoxTask save={saveTaskResponse} />
         },
-        // {
-        //     title: "Second Task",
-        //     description: <>
-        //         Lorem Ipsum <Em>30+ open source components</Em>.
-        //         Including authentication screens with Clerk, Supabase and Magic.
-        //         Fully functional forms with React Hook Form. Data tables with React
-        //         Table.
-        //     </>,
-        //     content: <TaskWithMCQImages
-        //         reference="/static/images/tasks/1.gif"
-        //         options={["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]}
-        //         save={saveTaskResponse}
-        //     />
-        // },
-        // {
-        //     title: "Third Task",
-        //     description: <>
-        //         Lorem Ipsum <Em>30+ open source components</Em>.
-        //         Including authentication screens with Clerk, Supabase and Magic.
-        //         Fully functional forms with React Hook Form. Data tables with React
-        //         Table.
-        //     </>,
-        //     content: <RotatingCubeTask save={saveTaskResponse} />
-        // },
-        // {
-        //     title: "Fourth Task",
-        //     description: <>
-        //         Lorem Ipsum <Em>30+ open source components</Em>.
-        //         Including authentication screens with Clerk, Supabase and Magic.
-        //         Fully functional forms with React Hook Form. Data tables with React
-        //         Table.
-        //     </>,
-        //     content: <TaskWithMCQImages
-        //         reference="/static/images/tasks/2.gif"
-        //         options={["/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif"]}
-        //         save={saveTaskResponse}
-        //     />
-        // },
-        // {
-        //     title: "Fifth Task",
-        //     description: <>
-        //         Lorem Ipsum <Em>30+ open source components</Em>.
-        //         Including authentication screens with Clerk, Supabase and Magic.
-        //         Fully functional forms with React Hook Form. Data tables with React
-        //         Table.
-        //     </>,
-        //     content: <TaskWithMCQImages
-        //         reference="/static/images/tasks/3.gif"
-        //         options={["/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif"]}
-        //         save={saveTaskResponse}
-        //     />
-        // }
+        {
+            title: "The Rotation Task",
+            description: <RotationTaskDescription />,
+            premises: [
+                <RotationTaskPremise1 />,
+                <RotationTaskPremise2 />
+            ],
+            content: <RotatingCubeTask save={saveTaskResponse} />
+        },
+        {
+            title: "Dancing Task",
+            description: <DancingTaskDescription />,
+            premises: [
+                <DancingTaskPremise1 />
+            ],
+            content: <TaskWithMCQImages
+                reference="/static/images/tasks/3.gif"
+                options={["/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif"]}
+                save={saveTaskResponse}
+            />
+        },
+        {
+            title: "Yoga Task",
+            description: <YogaTaskDescription />,
+            premises: [
+                <YogaTaskPremise1 />
+            ],
+            content: <TaskWithMCQImages
+                reference="/static/images/tasks/1.gif"
+                options={["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]}
+                save={saveTaskResponse}
+            />
+        },
+        {
+            title: "Follow the road Task",
+            description: <RoadTaskDescription />,
+            premises: [
+                <RoadTaskPremise1 />
+            ],
+            content: <TaskWithMCQImages
+                reference="/static/images/tasks/2.gif"
+                options={["/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif"]}
+                save={saveTaskResponse}
+            />
+        }
     ]
 
     return (
@@ -144,8 +172,8 @@ export const Survey: NextPage = () => {
             <Box>
                 <SurveyHero
                     openModal={(taskIndex) => { setIsModalOpen(true); setTaskIndex(taskIndex); }}
-                    taskDataList={taskDataList}
                     tasks={tasks}
+                    savedTasks={savedTaskList}
                 />
             </Box>
 
@@ -171,13 +199,13 @@ type Task = {
 type SurveyHeroProps = {
     openModal: (taskIndex: number) => void,
     tasks: Task[],
-    taskDataList: TaskDataListType
+    savedTasks: TaskDataType[]
 }
 
 export const SurveyHero = ({
     openModal,
     tasks,
-    taskDataList
+    savedTasks
 }: SurveyHeroProps) => {
 
     return (
@@ -188,7 +216,7 @@ export const SurveyHero = ({
                         key={index}
                         title={task.title}
                         description={task.description}
-                        completed={Boolean(taskDataList[index + 1] && taskDataList[index + 1].result)}
+                        completed={Boolean(savedTasks && savedTasks.find(s_task => s_task.id == (index + 1))?.result)}
                         openModal={() => openModal(index)}
                     />
                 )
@@ -330,11 +358,11 @@ const SurveyModal = ({
                             {
                                 activePremise != null
                                     ? <>
-                                        <Text
+                                        <Box
                                             mt={"10"}
                                         >
                                             {task.premises[activePremise]}
-                                        </Text>
+                                        </Box>
 
                                         <Flex justify={"center"}>
                                             <Button
@@ -475,7 +503,7 @@ const TaskWithMCQImages = ({
                 >
                     {
                         options.map((option, index) =>
-                            <ImageOption src={option} key={index} onSelect={() => save(option)} />
+                            <ImageOption src={option} key={index} onSelect={() => save(option.replace('/static/images/tasks/', ''))} />
                         )
                     }
                 </Flex>
@@ -561,7 +589,7 @@ const TaskWithSlider = ({
                     </Slider>
                 </Box>
             }
-            save={() => save(response)}
+            save={() => save(Math.round(response * 100) / 100)}
         />
     )
 }
