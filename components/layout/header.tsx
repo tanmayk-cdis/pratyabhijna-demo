@@ -11,7 +11,7 @@ import Navigation from './navigation'
 import { Logo } from './logo'
 import { useScroll } from 'framer-motion'
 
-export interface HeaderProps extends Omit<BoxProps, 'children'> {}
+export interface HeaderProps extends Omit<BoxProps, 'children'> { }
 
 export const Header = (props: HeaderProps) => {
   const ref = React.useRef<HTMLHeadingElement>(null)
@@ -44,7 +44,7 @@ export const Header = (props: HeaderProps) => {
     >
       <Container maxW="container.2xl" px="8" py="4">
         <Flex width="full" align="center" justify="space-between">
-          <Logo
+          {/* <Logo
             onClick={(e) => {
               if (window.location.pathname === '/') {
                 e.preventDefault()
@@ -55,7 +55,15 @@ export const Header = (props: HeaderProps) => {
                 })
               }
             }}
-          />
+          /> */}
+          <Box
+            fontSize={'2xl'}
+            fontWeight={'bold'}
+          >
+            <a href="/">
+              Pratyabhijna
+            </a>
+          </Box>
           <Navigation />
         </Flex>
       </Container>

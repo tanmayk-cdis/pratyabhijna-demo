@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/react'
 import { Link } from '@saas-ui/react'
 import { NextSeoProps } from 'next-seo'
-import { FaGithub, FaTwitter } from 'react-icons/fa'
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa'
 import { FiCheck } from 'react-icons/fi'
 import { Logo } from './logo'
 
@@ -9,7 +9,7 @@ const siteConfig = {
   logo: Logo,
   seo: {
     title: 'Saas UI',
-    description: 'The React component library for startups',
+    description: 'World`s largest study on mental imagery.',
   } as NextSeoProps,
   termsUrl: '#',
   privacyUrl: '#',
@@ -43,21 +43,21 @@ const siteConfig = {
     copyright: (
       <>
         Built by{' '}
-        <Link href="https://twitter.com/Pagebakers">Eelco Wiersma</Link>
+        <Link href="https://iitk.ac.in/cdis">CDIS, IIT Kanpur</Link>
       </>
     ),
     links: [
       {
-        href: 'mailto:hello@saas-ui.dev',
+        href: 'mailto:ishan20@iitk.ac.in',
         label: 'Contact',
       },
       {
-        href: 'https://twitter.com/saas_js',
+        href: 'https://twitter.com/',
         label: <FaTwitter size="14" />,
       },
       {
-        href: 'https://github.com/saas-js/saas-ui',
-        label: <FaGithub size="14" />,
+        href: 'https://linkedin.com/',
+        label: <FaLinkedin size="14" />,
       },
     ],
   },

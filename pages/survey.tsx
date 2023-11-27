@@ -132,8 +132,15 @@ export const Survey: NextPage = () => {
                 <DancingTaskPremise1 />
             ],
             content: <TaskWithMCQImages
-                reference="/static/images/tasks/3.gif"
-                options={["/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif", "/static/images/tasks/3.gif"]}
+                reference="/static/images/tasks/Dance_Task/Standard_Dance.gif"
+                options={[
+                    "/static/images/tasks/Dance_Task/Dance_jitter_0.gif",
+                    "/static/images/tasks/Dance_Task/Dance_jitter_2.gif",
+                    "/static/images/tasks/Dance_Task/Dance_jitter_4.gif",
+                    "/static/images/tasks/Dance_Task/Dance_jitter_10.gif",
+                    "/static/images/tasks/Dance_Task/Dance_jitter_20.gif",
+                    "I cannot visualize this in my imagination"
+                ]}
                 save={saveTaskResponse}
             />
         },
@@ -144,8 +151,15 @@ export const Survey: NextPage = () => {
                 <YogaTaskPremise1 />
             ],
             content: <TaskWithMCQImages
-                reference="/static/images/tasks/1.gif"
-                options={["/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif", "/static/images/tasks/1.gif"]}
+                reference="/static/images/tasks/Yoga_Task/yoga_standard.gif"
+                options={[
+                    "/static/images/tasks/Yoga_Task/yoga_jitter_0.gif",
+                    "/static/images/tasks/Yoga_Task/yoga_jitter_2.gif",
+                    "/static/images/tasks/Yoga_Task/yoga_jitter_4.gif",
+                    "/static/images/tasks/Yoga_Task/yoga_jitter_10.gif",
+                    "/static/images/tasks/Yoga_Task/yoga_jitter_20.gif",
+                    "I cannot visualize this in my imagination"
+                ]}
                 save={saveTaskResponse}
             />
         },
@@ -156,8 +170,36 @@ export const Survey: NextPage = () => {
                 <RoadTaskPremise1 />
             ],
             content: <TaskWithMCQImages
-                reference="/static/images/tasks/2.gif"
-                options={["/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif", "/static/images/tasks/2.gif"]}
+                reference="/static/images/tasks/Road_Task/road_standard.gif"
+                options={[
+                    "/static/images/tasks/Road_Task/road_no_break.gif",
+                    "/static/images/tasks/Road_Task/BREAK_1.gif",
+                    "/static/images/tasks/Road_Task/BREAK_2.gif",
+                    "/static/images/tasks/Road_Task/BREAK_3.gif",
+                    "/static/images/tasks/Road_Task/BREAK_4.gif",
+                    "/static/images/tasks/Road_Task/BREAK_5.gif",
+                    "I cannot visualize this in my imagination"
+                ]}
+                save={saveTaskResponse}
+            />
+        },
+        {
+            title: "Tap Task",
+            description: 'Tap Task',
+            premises: [
+                'Tap Task'
+            ],
+            content: <TaskWithMCQImages
+                reference="/static/images/tasks/Tap_Task/Standard_Tap.gif"
+                options={[
+                    "/static/images/tasks/Tap_Task/No_breaks.gif",
+                    "/static/images/tasks/Tap_Task/Tap_break_1.gif",
+                    "/static/images/tasks/Tap_Task/Tap_break_2.gif",
+                    "/static/images/tasks/Tap_Task/Tap_break_3.gif",
+                    "/static/images/tasks/Tap_Task/Tap_break_4.gif",
+                    "/static/images/tasks/Tap_Task/Tap_break_5.gif",
+                    "I cannot visualize this in my imagination"
+                ]}
                 save={saveTaskResponse}
             />
         }
@@ -349,7 +391,7 @@ const SurveyModal = ({
                         }}
                     >
 
-                        <Container maxW={"container.md"} className="markdown">
+                        <Container maxW={"container.lg"} className="markdown">
                             <Heading as={"h2"} size={"3xl"} textAlign={"center"}>
                                 {task.title}
                             </Heading>
@@ -500,6 +542,9 @@ const TaskWithMCQImages = ({
             inputs={
                 <Flex
                     gap={"1rem"}
+                    wrap={'wrap'}
+                    justify={'center'}
+                    mt={'5'}
                 >
                     {
                         options.map((option, index) =>
@@ -527,20 +572,42 @@ const ImageOption = ({
         onSelect()
     }
 
+    const optionAttributes = {
+        border: "solid 2px",
+        rounded: "md",
+        height: "250px",
+        boxShadow: "0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)",
+        cursor: "pointer",
+        _hover: {
+            borderColor: "primary.500"
+        },
+        ref: scope,
+        onClick: select
+    }
+
     return (
-        <Img
-            src={src}
-            border={"solid 2px"}
-            rounded={"md"}
-            height={"250px"}
-            boxShadow={"0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)"}
-            cursor={"pointer"}
-            _hover={{
-                borderColor: "primary.500"
-            }}
-            ref={scope}
-            onClick={select}
-        />
+        <>
+            {
+                src.endsWith('.gif')
+                    ? <Img
+                        {...optionAttributes}
+                        src={src}
+                    />
+                    : <Flex
+                        {...optionAttributes}
+                        padding={'3'}
+                        justify={'center'}
+                        align={'center'}
+                        maxWidth={'250px'}
+                        textAlign={'center'}
+                        bg={'white'}
+                        textColor={'black'}
+                        fontSize={'1.4rem'}
+                    >
+                        {src}
+                    </Flex>
+            }
+        </>
     )
 }
 
