@@ -8,7 +8,7 @@ import { Logo } from './logo'
 const siteConfig = {
   logo: Logo,
   seo: {
-    title: 'Saas UI',
+    title: 'Pratyabhijna',
     description: 'World`s largest study on mental imagery.',
   } as NextSeoProps,
   termsUrl: '#',
@@ -62,7 +62,7 @@ const siteConfig = {
     ],
   },
   signup: {
-    title: 'Start building with Saas UI',
+    title: 'LOG IN / SIGN UP',
     features: [
       {
         icon: FiCheck,
