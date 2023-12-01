@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import NextLink from 'next/link'
-import { Box, Button, Center, Input, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Center, Flex, Input, Stack, Text } from '@chakra-ui/react'
 import { /*Auth,*/ Link } from '@saas-ui/react'
 import { Features } from 'components/features'
 import { BackgroundGradient } from 'components/gradients/background-gradient'
@@ -10,38 +10,55 @@ import siteConfig from 'data/config'
 import { FaGithub, FaGoogle } from 'react-icons/fa'
 import { PageTransition } from 'components/motion/page-transition'
 import { HttpService } from 'services/http-service'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { OTP_ROUTE_EMAIL, OTP_ROUTE_KEY } from 'helpers/constants'
 
-const providers = {
-  google: {
-    name: 'Google',
-    icon: FaGoogle,
-  },
-  github: {
-    name: 'Github',
-    icon: FaGithub,
-    variant: 'solid',
-  },
-}
-
-const Login: NextPage = () => {
-  const [email, setEmail] = useState('')
+const OTP: NextPage = () => {
+  const [otp, setOtp] = useState('')
+  const [sessionKey, setSessionKey] = useState(null)
+  const [sessionEmail, setSessionEmail] = useState(null)
   const router = useRouter()
 
-  const sendOTP = () => {
-    HttpService.post('auth/otp', {
-      email: email
+  const login = () => {
+    HttpService.post('/auth/otp/login', {
+      otp: otp,
+      email: sessionEmail,
+      session_key: sessionKey
     })
-      .then((response) => {
+      .then(response => {
         if (response.data.success) {
-          localStorage.setItem(OTP_ROUTE_KEY, response.data.session_key)
-          localStorage.setItem(OTP_ROUTE_EMAIL, email)
-          router.push('/otp')
+          sessionStorage.setItem('user', JSON.stringify(
+            {
+              accessToken: response.data.accessToken,
+              isRegistrationPending: response.data.isRegistrationPending
+            }
+          ))
+          router.push('/survey')
+        }
+      })
+      .catch(error => {
+        if (error.response.status == 422) {
+          router.push('/')
+        }
+
+        if (error.response.status == 401) {
+          router.push('/signup')
         }
       })
   }
+
+  useEffect(() => {
+    let key = localStorage[OTP_ROUTE_KEY]
+    let email = localStorage[OTP_ROUTE_EMAIL]
+
+    if (!key || !email) {
+      router.push('/signup')
+    }
+
+    setSessionKey(key)
+    setSessionEmail(email)
+  }, [])
 
   return (
     <Section height="100vh" innerWidth="container.xl">
@@ -81,21 +98,12 @@ const Login: NextPage = () => {
             <Box width="100%" pt="8" px="8" id='abc'>
               <Box textAlign={'center'} fontSize={'2xl'} fontWeight={'bold'} mb={'9'}>{siteConfig.signup.title}</Box>
 
-              <Box fontSize={'md'} fontWeight={'bold'} mb={'2'}>Email</Box>
-              <Input type='text' mb={'1'} value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Box fontSize={'md'} fontWeight={'bold'} mb={'2'}>OTP</Box>
+              <Input type='number' mb={'1'} value={otp} onChange={(e) => setOtp(e.target.value)} />
 
-              <Text color="muted" fontSize="sm" mb={'3'}>
-                By signing up you agree to our{' '}
-                <Link href={siteConfig.termsUrl} color="white">
-                  Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href={siteConfig.privacyUrl} color="white">
-                  Privacy Policy
-                </Link>
-              </Text>
-
-              <Button colorScheme='purple' w={'100%'} py={'5'} onClick={sendOTP}> Get OTP </Button>
+              <Flex mt={'4'}>
+                <Button colorScheme='purple' w={'100%'} py={'5'} onClick={login}> Login </Button>
+              </Flex>
             </Box>
           </Center>
         </Stack>
@@ -104,7 +112,7 @@ const Login: NextPage = () => {
   )
 }
 
-export default Login
+export default OTP
 
 export const getStaticProps = () => {
   return {

@@ -9,9 +9,16 @@ axios.defaults.headers.common = {
 }
 
 axios.interceptors.response.use(response => response, error => {
-    console.log(error, 'works')
-
+    if (error.response.status == 401) {
+        console.log('handle unauthenticated!')
+    }
     return Promise.reject(error)
 })
 
 export const HttpService = axios
+
+export const AuthHttpService = () => axios.create({
+    headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('accessToken')}`
+    }
+})

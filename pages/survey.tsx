@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Heading, Image, Img, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, Image, Img, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
 import { transparentize } from "@chakra-ui/theme-tools";
 import { HighlightsItem } from "components/highlights";
 import { SEO } from "components/seo";
@@ -25,6 +25,11 @@ import YogaTaskPremise1 from "components/survey/content/yoga-task/premise-1.mdx"
 import RoadTaskDescription from "components/survey/content/follow-the-road-task/description.mdx"
 import RoadTaskPremise1 from "components/survey/content/follow-the-road-task/premise-1.mdx"
 
+import TapTaskDescription from "components/survey/content/tap-task/description.mdx"
+import TapTaskPremise1 from "components/survey/content/tap-task/premise-1.mdx"
+
+import { AuthHttpService } from "services/http-service";
+
 export type TaskDataType = {
     id?: number
     startTime?: number | string,
@@ -41,6 +46,8 @@ export const Survey: NextPage = () => {
     const [taskIndex, setTaskIndex] = useState<number>(0)
     const [taskDataList, setTaskDataList] = useState<TaskDataListType>({})
     const [savedTaskList, setSavedTaskList] = useState<TaskDataType[]>([])
+    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState<boolean>(false)
+    const [user, setUser] = useState<{ isRegistrationPending: boolean }>()
 
     const saveTaskResponse = (response: string | number) => {
         setResponse(response)
@@ -97,13 +104,34 @@ export const Survey: NextPage = () => {
         return freshTaskData
     }
 
+    const closeRegisterModal = () => {
+        const newUser = {
+            ...user,
+            isRegistrationPending: false
+        }
+
+        setUser(newUser)
+
+        sessionStorage.setItem('user', JSON.stringify(newUser))
+
+        setIsRegisterModalOpen(false)
+    }
+
     useEffect(() => {
         // console.log(taskDataList)
     }, [taskDataList])
 
     useEffect(() => {
+        setUser(JSON.parse(sessionStorage.getItem('user') ?? '{}'))
+
         getTaskList()
     }, [])
+
+    useEffect(() => {
+        if (user && user.isRegistrationPending) {
+            setIsRegisterModalOpen(true)
+        }
+    }, [user])
 
 
     const tasks = [
@@ -184,10 +212,10 @@ export const Survey: NextPage = () => {
             />
         },
         {
-            title: "Tap Task",
-            description: 'Tap Task',
+            title: "Running Tap Task ",
+            description: <TapTaskDescription />,
             premises: [
-                'Tap Task'
+                <TapTaskPremise1 />
             ],
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/Tap_Task/Standard_Tap.gif"
@@ -219,14 +247,17 @@ export const Survey: NextPage = () => {
                 />
             </Box>
 
-            {
-                <SurveyModal
-                    open={isModalOpen}
-                    onClosed={() => setIsModalOpen(false)}
-                    task={tasks[taskIndex]}
-                    start={setStartTime}
-                />
-            }
+            <SurveyModal
+                open={isModalOpen}
+                onClosed={() => setIsModalOpen(false)}
+                task={tasks[taskIndex]}
+                start={setStartTime}
+            />
+
+            <RegistrationModal
+                open={isRegisterModalOpen}
+                onClosed={closeRegisterModal}
+            />
         </Box>
     );
 };
@@ -427,6 +458,112 @@ const SurveyModal = ({
                 <ModalFooter>
                     <Button onClick={onClose}>Close</Button>
                 </ModalFooter>
+            </ModalContent>
+        </Modal>
+    )
+}
+
+const RegistrationModal = ({
+    onClosed,
+    open
+}: {
+    onClosed: () => void
+    open: boolean
+}) => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [name, setName] = useState('')
+    const [age, setAge] = useState<string>()
+    const [gender, setGender] = useState<string>()
+
+    const register = () => {
+        if (!(name && age && gender)) {
+            alert('Please complete the form.')
+            return
+        }
+
+        AuthHttpService().post('/user/register', {
+            name: name,
+            age: age,
+            gender: gender
+        })
+            .then(response => {
+                if (response.data.success) {
+                    onClosed()
+                }
+            })
+    }
+
+    useEffect(() => {
+        if (open)
+            onOpen()
+        else
+            onClose()
+    }, [open])
+
+    useEffect(() => {
+        if (!isOpen) {
+            onClosed()
+        }
+    }, [isOpen])
+
+    return (
+        <Modal onClose={onClose} size={"full"} isOpen={isOpen}>
+            <ModalOverlay />
+
+            <ModalContent>
+                <ModalBody
+                    display={"flex"}
+                    flexDir={"column"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    padding={{
+                        lg: "20",
+                        base: "10"
+                    }}
+                >
+                    <Container maxW={"container.lg"} className="markdown">
+                        <Heading as={"h2"} size={"3xl"} textAlign={"center"}>
+                            Registration
+                        </Heading>
+                        <Box fontSize={'small'} textAlign={'center'}>Please fill up the following form to continue...</Box>
+
+                        <Container maxW={"container.md"} mt={'10'} display={'flex'} flexDir={'column'} gap={'4'}>
+                            <Box>
+                                <Box fontSize={'md'} fontWeight={'bold'} mb={'2'}>Name</Box>
+
+                                <Input type='text' mb={'1'} value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+                            </Box>
+
+                            <Box>
+                                <Box fontSize={'md'} fontWeight={'bold'} mb={'2'}>Age</Box>
+
+                                <Input type='number' mb={'1'} value={age} onChange={(e) => setAge(e.target.value)} />
+                            </Box>
+
+                            <Box>
+                                <Box fontSize={'md'} fontWeight={'bold'} mb={'2'}>Gender</Box>
+
+                                {/* <Input type='number' mb={'1'} value={age} onChange={(e) => setAge(e.target.value)} /> */}
+                                <Select placeholder='Select gender' value={gender} onChange={(e) => setGender(e.target.value)}>
+                                    <option value='f'>Male</option>
+                                    <option value='m'>Female</option>
+                                    <option value='o'>Others</option>
+                                </Select>
+                            </Box>
+
+                            <Box textAlign={'center'}>
+                                <Button
+                                    size={"lg"}
+                                    colorScheme="blue"
+                                    mt={"5"}
+                                    onClick={register}
+                                >
+                                    Submit
+                                </Button>
+                            </Box>
+                        </Container>
+                    </Container>
+                </ModalBody>
             </ModalContent>
         </Modal>
     )

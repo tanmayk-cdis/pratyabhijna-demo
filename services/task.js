@@ -1,10 +1,10 @@
 import axios from "axios"
-import { HttpService, baseUrl } from "./http-service"
+import { AuthHttpService, HttpService, baseUrl } from "./http-service"
 
 export const getTasks = () => {
-    return HttpService.get("/tasks")
+    return AuthHttpService().get("/tasks")
 }
 
 export const saveTask = (task) => {
-    return HttpService.post('/task', task)
+    return AuthHttpService().post('/task', task)
 }
