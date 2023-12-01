@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react"
 import type { NextPage } from "next";
 import Image from "next/image";
 import {
@@ -71,6 +72,7 @@ import {
 import ConsentForm from "./consent-form.mdx"
 import Disclaimer from "./discalimer.mdx"
 import { useRouter } from "next/router";
+import { useAuth } from "context/AuthContext";
 
 const Home: NextPage = () => {
   return (
@@ -100,11 +102,17 @@ export const HeroSection: React.FC = () => {
   const [isConsentOpen, setIsConsentOpen] = React.useState(false)
   const [isDisclaimerOpen, setIsDisclaimerOpen] = React.useState(false)
   const router = useRouter()
+  const { user } = useAuth()
 
   const saveConsent = () => {
     setIsConsentOpen(false)
     setIsDisclaimerOpen(true)
   }
+
+  useEffect(() => {
+    if (user?.accessToken)
+      router.push('/survey')
+  }, [user])
 
   return (
     <Box position="relative" overflow="hidden">
@@ -122,7 +130,7 @@ export const HeroSection: React.FC = () => {
             }
             description={
               <FallInPlace delay={0.4} fontWeight="medium">
-                World’s largest study on mental imagery.
+                World`s largest study on mental imagery.
               </FallInPlace>
             }
           >
@@ -140,7 +148,7 @@ export const HeroSection: React.FC = () => {
 
           <ConsentModal onClosed={() => setIsConsentOpen(false)} open={isConsentOpen} save={saveConsent} />
 
-          <DisclaimerModal onClosed={() => setIsDisclaimerOpen(false)} open={isDisclaimerOpen} save={() => router.push('/survey')} />
+          <DisclaimerModal onClosed={() => setIsDisclaimerOpen(false)} open={isDisclaimerOpen} save={() => router.push('/signup')} />
 
           <Box
             height="600px"

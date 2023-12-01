@@ -31,6 +31,11 @@ const Login: NextPage = () => {
   const router = useRouter()
 
   const sendOTP = () => {
+    if (!email) {
+      alert('Please enter your email.')
+      return
+    }
+
     HttpService.post('auth/otp', {
       email: email
     })

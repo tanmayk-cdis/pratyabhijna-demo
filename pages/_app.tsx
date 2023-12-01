@@ -8,20 +8,23 @@ import theme from "../theme";
 
 import "../styles/survey.css"
 import "../styles/markdown.scss"
+import { AuthContextProvider } from "context/AuthContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { announcement, header, footer } = pageProps;
 
   return (
     <SaasProvider theme={theme}>
-      <AuthProvider>
-        <Layout
-          announcementProps={announcement}
-          headerProps={header}
-          footerProps={footer}
-        >
-          <Component {...pageProps} />
-        </Layout>
+      <AuthProvider> {/* Theme wala Auth */}
+        <AuthContextProvider> {/* Humara wala Auth */}
+          <Layout
+            announcementProps={announcement}
+            headerProps={header}
+            footerProps={footer}
+          >
+            <Component {...pageProps} />
+          </Layout>
+        </AuthContextProvider>
       </AuthProvider>
     </SaasProvider>
   );

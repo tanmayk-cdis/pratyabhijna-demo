@@ -13,12 +13,14 @@ import { HttpService } from 'services/http-service'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { OTP_ROUTE_EMAIL, OTP_ROUTE_KEY } from 'helpers/constants'
+import { useAuth } from 'context/AuthContext'
 
 const OTP: NextPage = () => {
   const [otp, setOtp] = useState('')
   const [sessionKey, setSessionKey] = useState(null)
   const [sessionEmail, setSessionEmail] = useState(null)
   const router = useRouter()
+  const { user, updateUser } = useAuth()
 
   const login = () => {
     HttpService.post('/auth/otp/login', {
@@ -28,12 +30,10 @@ const OTP: NextPage = () => {
     })
       .then(response => {
         if (response.data.success) {
-          sessionStorage.setItem('user', JSON.stringify(
-            {
-              accessToken: response.data.accessToken,
-              isRegistrationPending: response.data.isRegistrationPending
-            }
-          ))
+          updateUser({
+            accessToken: response.data.accessToken,
+            isRegistrationPending: response.data.isRegistrationPending
+          })
           router.push('/survey')
         }
       })

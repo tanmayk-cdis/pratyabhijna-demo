@@ -1,5 +1,5 @@
 import * as React from "react";
-import { HStack } from "@chakra-ui/react";
+import { HStack, Button } from "@chakra-ui/react";
 
 import { useRouter } from "next/router";
 
@@ -14,28 +14,32 @@ import { MobileNavContent } from "components/mobile-nav";
 import { useDisclosure, useUpdateEffect } from "@chakra-ui/react";
 
 import ThemeToggle from "./theme-toggle";
+import { useAuth } from "context/AuthContext";
 
 const Navigation: React.FC = () => {
   const mobileNav = useDisclosure();
   const router = useRouter();
-  const activeId = useScrollSpy(
-    siteConfig.header.links
-      .filter(({ id }) => id)
-      .map(({ id }) => `[id="${id}"]`),
-    {
-      threshold: 0.75,
-    }
-  );
+  const { user, logout } = useAuth()
 
-  const mobileNavBtnRef = React.useRef<HTMLButtonElement>();
 
-  useUpdateEffect(() => {
-    mobileNavBtnRef.current?.focus();
-  }, [mobileNav.isOpen]);
+  // const activeId = useScrollSpy(
+  //   siteConfig.header.links
+  //     .filter(({ id }) => id)
+  //     .map(({ id }) => `[id="${id}"]`),
+  //   {
+  //     threshold: 0.75,
+  //   }
+  // );
+
+  // const mobileNavBtnRef = React.useRef<HTMLButtonElement>();
+
+  // useUpdateEffect(() => {
+  //   mobileNavBtnRef.current?.focus();
+  // }, [mobileNav.isOpen]);
 
   return (
     <HStack spacing="2" flexShrink={0}>
-      {siteConfig.header.links.map(({ href, id, ...props }, i) => {
+      {/* {siteConfig.header.links.map(({ href, id, ...props }, i) => {
         return (
           <NavLink
             display={["none", null, "block"]}
@@ -52,17 +56,35 @@ const Navigation: React.FC = () => {
             {props.label}
           </NavLink>
         );
-      })}
+      })} */}
+
+      {
+        user?.accessToken != null
+          ? <Button
+            display={["none", null, "block"]}
+            onClick={logout}
+            variant={'primary'}
+          >
+            Logout
+          </Button>
+          : <NavLink
+            display={["none", null, "block"]}
+            href={'/signup'}
+            variant={'primary'}
+          >
+            Log In / Sign Up
+          </NavLink>
+      }
 
       {/* <ThemeToggle /> */}
 
-      <MobileNavButton
+      {/* <MobileNavButton
         ref={mobileNavBtnRef}
         aria-label="Open Menu"
         onClick={mobileNav.onOpen}
-      />
+      /> */}
 
-      <MobileNavContent isOpen={mobileNav.isOpen} onClose={mobileNav.onClose} />
+      {/* <MobileNavContent isOpen={mobileNav.isOpen} onClose={mobileNav.onClose} /> */}
     </HStack>
   );
 };

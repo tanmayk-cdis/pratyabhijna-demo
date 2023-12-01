@@ -1,3 +1,5 @@
+import { getUser } from "context/AuthContext";
+
 const { default: axios } = require("axios");
 
 export const baseUrl = "http://localhost:3000"
@@ -19,6 +21,6 @@ export const HttpService = axios
 
 export const AuthHttpService = () => axios.create({
     headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('accessToken')}`
+        'Authorization': `Bearer ${getUser().accessToken}`
     }
 })

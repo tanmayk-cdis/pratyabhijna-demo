@@ -29,6 +29,8 @@ import TapTaskDescription from "components/survey/content/tap-task/description.m
 import TapTaskPremise1 from "components/survey/content/tap-task/premise-1.mdx"
 
 import { AuthHttpService } from "services/http-service";
+import { useAuth } from "context/AuthContext";
+import { useRouter } from "next/router";
 
 export type TaskDataType = {
     id?: number
@@ -47,7 +49,10 @@ export const Survey: NextPage = () => {
     const [taskDataList, setTaskDataList] = useState<TaskDataListType>({})
     const [savedTaskList, setSavedTaskList] = useState<TaskDataType[]>([])
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState<boolean>(false)
-    const [user, setUser] = useState<{ isRegistrationPending: boolean }>()
+    // const [user, setUser] = useState<{ isRegistrationPending: boolean }>()
+    const { user, updateUser } = useAuth()
+    const router = useRouter()
+
 
     const saveTaskResponse = (response: string | number) => {
         setResponse(response)
@@ -79,12 +84,12 @@ export const Survey: NextPage = () => {
         let taskList: TaskDataType[] = []
         await getTasks().then(response => taskList = response.data)
 
-        taskList = taskList.map(task => {
-            task.startTime = (new Date(task.startTime)).getTime()
-            task.endTime = (new Date(task.endTime)).getTime()
+        // taskList = taskList.map(task => {
+        //     task.startTime = (new Date(task.startTime)).getTime()
+        //     task.endTime = (new Date(task.endTime)).getTime()
 
-            return task
-        })
+        //     return task
+        // })
 
         setSavedTaskList(taskList)
     }
@@ -105,14 +110,10 @@ export const Survey: NextPage = () => {
     }
 
     const closeRegisterModal = () => {
-        const newUser = {
+        updateUser({
             ...user,
             isRegistrationPending: false
-        }
-
-        setUser(newUser)
-
-        sessionStorage.setItem('user', JSON.stringify(newUser))
+        })
 
         setIsRegisterModalOpen(false)
     }
@@ -122,12 +123,15 @@ export const Survey: NextPage = () => {
     }, [taskDataList])
 
     useEffect(() => {
-        setUser(JSON.parse(sessionStorage.getItem('user') ?? '{}'))
-
-        getTaskList()
+        // getTaskList()
     }, [])
 
     useEffect(() => {
+        if (!user?.accessToken)
+            router.push('/')
+        else
+            getTaskList()
+
         if (user && user.isRegistrationPending) {
             setIsRegisterModalOpen(true)
         }
