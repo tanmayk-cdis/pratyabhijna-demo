@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Heading, Image, Img, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, Image, Img, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Slider, SliderFilledTrack, SliderMark, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
 import { transparentize } from "@chakra-ui/theme-tools";
 import { HighlightsItem } from "components/highlights";
 import { SEO } from "components/seo";
@@ -453,9 +453,15 @@ const SurveyModal = ({
                                             </Button>
                                         </Flex>
                                     </>
-                                    : task.content
+                                    : ''
 
                             }
+
+                            <Box display={activePremise == null ? 'block' : 'none'}>
+                                {
+                                    task.content
+                                }
+                            </Box>
                         </Container>
                     </ModalBody>
                 }
@@ -627,9 +633,11 @@ const BlinkingBoxTask = ({
         <TaskWithSlider
             reference={<BlinkingBox duration={duration} />}
             response={duration}
-            setResponse={setDuration}
+            setResponse={response => setDuration(response + 0.05)}
             save={save}
             defaultValue={DEFAULT_DURATION}
+            minMark="SLOW"
+            maxMark="FAST"
         />
     )
 }
@@ -653,6 +661,8 @@ const RotatingCubeTask = ({
                 min={1}
                 max={4}
                 step={0.1}
+                minMark="SLOW"
+                maxMark="FAST"
             />
         </>
     )
@@ -753,6 +763,12 @@ const ImageOption = ({
     )
 }
 
+const SLIDER_MARK_ATTRIBUTES = {
+    mt: "3",
+    ml: "-5",
+    fontWeight: "bold"
+}
+
 const TaskWithSlider = ({
     reference,
     save,
@@ -761,7 +777,9 @@ const TaskWithSlider = ({
     defaultValue,
     min = 0.1,
     max = 1,
-    step = 0.05
+    step = 0.05,
+    minMark,
+    maxMark
 }: {
     reference: ReactNode
     save: (response: number) => void
@@ -770,7 +788,9 @@ const TaskWithSlider = ({
     defaultValue: number
     min?: number,
     max?: number,
-    step?: number
+    step?: number,
+    minMark?: string,
+    maxMark?: string
 }) => {
     // const DEFAULT_DURATION = 0.55
     // const [duration, setDuration] = useState(DEFAULT_DURATION)
@@ -794,7 +814,16 @@ const TaskWithSlider = ({
                             <Box position='relative' right={10} />
                             <SliderFilledTrack bg='purple.400' />
                         </SliderTrack>
+
                         <SliderThumb boxSize={6} />
+
+                        <SliderMark value={min} {...SLIDER_MARK_ATTRIBUTES}>
+                            {minMark}
+                        </SliderMark>
+
+                        <SliderMark value={max} {...SLIDER_MARK_ATTRIBUTES}>
+                            {maxMark}
+                        </SliderMark>
                     </Slider>
                 </Box>
             }
