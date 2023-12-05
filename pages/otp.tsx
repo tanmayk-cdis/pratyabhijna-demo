@@ -58,7 +58,7 @@ const OTP: NextPage = () => {
 
     setSessionKey(key)
     setSessionEmail(email)
-  }, [])
+  }, [router])
 
   return (
     <Section height="100vh" innerWidth="container.xl">

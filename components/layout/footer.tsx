@@ -28,7 +28,7 @@ export const Footer: React.FC<FooterProps> = (props) => {
               <Flex>
                 {/* <Box as={siteConfig.logo} flex="1" height="32px" /> */}
                 <Box fontWeight={'bold'}>
-                  <a href='/'>Pratyabhijna</a>
+                  <Link href='/'>Pratyabhijna</Link>
                 </Box>
               </Flex>
               <Text fontSize="md" color="muted">

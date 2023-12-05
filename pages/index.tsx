@@ -112,7 +112,7 @@ export const HeroSection: React.FC = () => {
   useEffect(() => {
     if (user?.accessToken)
       router.push('/survey')
-  }, [user])
+  }, [user, router])
 
   return (
     <Box position="relative" overflow="hidden">
@@ -576,7 +576,7 @@ const InfoModal = ({
       onOpen()
     else
       onClose()
-  }, [open])
+  }, [open, onOpen, onClose])
 
   React.useEffect(() => {
     if (!isOpen) {
@@ -607,11 +607,11 @@ const InfoModal = ({
           </Heading>
           {/* <Lorem count={2} /> */}
 
-          <Text
+          <Box
             mt={"10"}
           >
             {contents}
-          </Text>
+          </Box>
         </ModalBody>
 
         <ModalFooter>

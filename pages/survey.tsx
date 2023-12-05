@@ -135,7 +135,7 @@ export const Survey: NextPage = () => {
         if (user && user.isRegistrationPending) {
             setIsRegisterModalOpen(true)
         }
-    }, [user])
+    }, [user, router])
 
 
     const tasks = [
@@ -143,8 +143,8 @@ export const Survey: NextPage = () => {
             title: "The Flicker Task",
             description: <FlickerTaskDescription />,
             premises: [
-                <FlickerTaskPremise1 />,
-                <FlickerTaskPremise2 />
+                <FlickerTaskPremise1 key={1} />,
+                <FlickerTaskPremise2 key={2} />
             ],
             content: <BlinkingBoxTask save={saveTaskResponse} />
         },
@@ -152,8 +152,8 @@ export const Survey: NextPage = () => {
             title: "The Rotation Task",
             description: <RotationTaskDescription />,
             premises: [
-                <RotationTaskPremise1 />,
-                <RotationTaskPremise2 />
+                <RotationTaskPremise1 key={1} />,
+                <RotationTaskPremise2 key={2} />
             ],
             content: <RotatingCubeTask save={saveTaskResponse} />
         },
@@ -161,7 +161,7 @@ export const Survey: NextPage = () => {
             title: "Dancing Task",
             description: <DancingTaskDescription />,
             premises: [
-                <DancingTaskPremise1 />
+                <DancingTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/Dance_Task/Standard_Dance.gif"
@@ -180,7 +180,7 @@ export const Survey: NextPage = () => {
             title: "Yoga Task",
             description: <YogaTaskDescription />,
             premises: [
-                <YogaTaskPremise1 />
+                <YogaTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/Yoga_Task/yoga_standard.gif"
@@ -199,7 +199,7 @@ export const Survey: NextPage = () => {
             title: "Follow the road Task",
             description: <RoadTaskDescription />,
             premises: [
-                <RoadTaskPremise1 />
+                <RoadTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/Road_Task/road_standard.gif"
@@ -219,7 +219,7 @@ export const Survey: NextPage = () => {
             title: "Running Tap Task ",
             description: <TapTaskDescription />,
             premises: [
-                <TapTaskPremise1 />
+                <TapTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
                 reference="/static/images/tasks/Tap_Task/Standard_Tap.gif"
@@ -350,6 +350,7 @@ const Card = ({
                         src="/static/images/check.svg"
                         height={"16"}
                         alignSelf={"end"}
+                        alt="check mark"
                     />
                     : <Button
                         alignSelf={"end"}
@@ -395,7 +396,7 @@ const SurveyModal = ({
             onOpen()
         else
             onClose()
-    }, [open])
+    }, [open, onOpen, onClose])
 
     useEffect(() => {
         if (!isOpen) {
@@ -502,7 +503,7 @@ const RegistrationModal = ({
             onOpen()
         else
             onClose()
-    }, [open])
+    }, [open, onOpen, onClose])
 
     useEffect(() => {
         if (!isOpen) {

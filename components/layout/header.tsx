@@ -10,6 +10,7 @@ import {
 import Navigation from './navigation'
 import { Logo } from './logo'
 import { useScroll } from 'framer-motion'
+import Link from 'next/link'
 
 export interface HeaderProps extends Omit<BoxProps, 'children'> { }
 
@@ -60,9 +61,9 @@ export const Header = (props: HeaderProps) => {
             fontSize={'2xl'}
             fontWeight={'bold'}
           >
-            <a href="/">
+            <Link href="/">
               Pratyabhijna
-            </a>
+            </Link>
           </Box>
           <Navigation />
         </Flex>

@@ -1,6 +1,10 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 
-const AuthContext = createContext();
+type AuthContextType = {
+    user: UserDataType,
+    updateUser: (newUserData: UserDataType) => void,
+    logout: () => void
+}
 
 type UserDataType = {
     accessToken: string | null
@@ -11,6 +15,12 @@ const DEFAULT_USER_DATA: UserDataType = {
     accessToken: null,
     isRegistrationPending: false
 }
+
+const AuthContext = createContext<AuthContextType>({
+    user: DEFAULT_USER_DATA,
+    updateUser: (newUserData) => '',
+    logout: () => ''
+});
 
 // Create a provider component to wrap around the App
 export function AuthContextProvider({ children }) {
