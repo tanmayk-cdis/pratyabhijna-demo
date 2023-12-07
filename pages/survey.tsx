@@ -3,7 +3,6 @@ import { transparentize } from "@chakra-ui/theme-tools";
 import { HighlightsItem } from "components/highlights";
 import { SEO } from "components/seo";
 import { NextPage } from "next";
-import { HeroSection } from "pages";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { AnimationScope, motion, useAnimate } from "framer-motion";
 import { getTasks, saveTask } from "services/task"

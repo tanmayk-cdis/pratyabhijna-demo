@@ -40,8 +40,6 @@ export function AuthContextProvider({ children }) {
     useEffect(() => {
         let storedData = sessionStorage.getItem('user')
 
-        console.log('got', storedData)
-
         setEffectChalGaya(true)
 
         if (storedData)
