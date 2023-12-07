@@ -9,7 +9,7 @@ type AuthContextType = {
 type UserDataType = {
     accessToken: string | null
     isRegistrationPending: boolean,
-    loading: boolean
+    loading?: boolean
 }
 
 const DEFAULT_USER_DATA: UserDataType = {
