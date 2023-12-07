@@ -8,12 +8,14 @@ type AuthContextType = {
 
 type UserDataType = {
     accessToken: string | null
-    isRegistrationPending: boolean
+    isRegistrationPending: boolean,
+    loading: boolean
 }
 
 const DEFAULT_USER_DATA: UserDataType = {
     accessToken: null,
-    isRegistrationPending: false
+    isRegistrationPending: false,
+    loading: true
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -31,7 +33,10 @@ export function AuthContextProvider({ children }) {
         if (effectChalGaya || force) {
             setUser(newUserData)
 
-            sessionStorage.setItem('user', JSON.stringify(newUserData))
+            sessionStorage.setItem('user', JSON.stringify({
+                ...newUserData,
+                loading: false
+            }))
         }
     }
 
