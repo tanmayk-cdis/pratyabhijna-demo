@@ -40,7 +40,10 @@ export function AuthContextProvider({ children }) {
         }
     }
 
-    const logout = () => updateUser(DEFAULT_USER_DATA)
+    const logout = () => updateUser({
+        ...DEFAULT_USER_DATA,
+        loading: false
+    })
 
     useEffect(() => {
         let storedData = sessionStorage.getItem('user')
