@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Heading, Image, Img, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Slider, SliderFilledTrack, SliderMark, SliderThumb, SliderTrack, Text, useDisclosure, useTheme } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, Image, Img, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Slider, SliderFilledTrack, SliderMark, SliderThumb, SliderTrack, Text, background, useDisclosure, useTheme } from "@chakra-ui/react";
 import { transparentize } from "@chakra-ui/theme-tools";
 import { HighlightsItem } from "components/highlights";
 import { SEO } from "components/seo";
@@ -170,10 +170,11 @@ export const Survey: NextPage = () => {
                     "/static/images/tasks/Dance_Task/Dance_jitter_2.gif",
                     "/static/images/tasks/Dance_Task/Dance_jitter_4.gif",
                     "/static/images/tasks/Dance_Task/Dance_jitter_10.gif",
-                    "/static/images/tasks/Dance_Task/Dance_jitter_20.gif",
-                    "I cannot visualize this in my imagination"
+                    "/static/images/tasks/Dance_Task/Dance_jitter_20.gif"
                 ]}
                 save={saveTaskResponse}
+                minMark="Smooth"
+                maxMark="Choppy"
             />
         },
         {
@@ -189,10 +190,11 @@ export const Survey: NextPage = () => {
                     "/static/images/tasks/Yoga_Task/yoga_jitter_2.gif",
                     "/static/images/tasks/Yoga_Task/yoga_jitter_4.gif",
                     "/static/images/tasks/Yoga_Task/yoga_jitter_10.gif",
-                    "/static/images/tasks/Yoga_Task/yoga_jitter_20.gif",
-                    "I cannot visualize this in my imagination"
+                    "/static/images/tasks/Yoga_Task/yoga_jitter_20.gif"
                 ]}
                 save={saveTaskResponse}
+                minMark="Smooth"
+                maxMark="Choppy"
             />
         },
         {
@@ -209,10 +211,11 @@ export const Survey: NextPage = () => {
                     "/static/images/tasks/Road_Task/BREAK_2.gif",
                     "/static/images/tasks/Road_Task/BREAK_3.gif",
                     "/static/images/tasks/Road_Task/BREAK_4.gif",
-                    "/static/images/tasks/Road_Task/BREAK_5.gif",
-                    "I cannot visualize this in my imagination"
+                    "/static/images/tasks/Road_Task/BREAK_5.gif"
                 ]}
                 save={saveTaskResponse}
+                minMark="Dosen't Break"
+                maxMark="Broken"
             />
         },
         {
@@ -229,10 +232,11 @@ export const Survey: NextPage = () => {
                     "/static/images/tasks/Tap_Task/Tap_break_2.gif",
                     "/static/images/tasks/Tap_Task/Tap_break_3.gif",
                     "/static/images/tasks/Tap_Task/Tap_break_4.gif",
-                    "/static/images/tasks/Tap_Task/Tap_break_5.gif",
-                    "I cannot visualize this in my imagination"
+                    "/static/images/tasks/Tap_Task/Tap_break_5.gif"
                 ]}
                 save={saveTaskResponse}
+                minMark="Dosen't Break"
+                maxMark="Broken"
             />
         }
     ]
@@ -583,7 +587,7 @@ const RegistrationModal = ({
 const BlinkingBox = ({
     duration
 }: {
-    duration: number
+    duration: number | null
 }) => {
     const [show, setShow] = useState(true)
     const SIDE = "180px"
@@ -626,16 +630,15 @@ const BlinkingBoxTask = ({
 }: {
     save: (response: string | number) => void
 }) => {
-    const DEFAULT_DURATION = 0.55
-    const [duration, setDuration] = useState(DEFAULT_DURATION)
+    const DEFAULT_DURATION = null
+    const [duration, setDuration] = useState<number | null>(DEFAULT_DURATION)
 
     return (
         <TaskWithSlider
             reference={<BlinkingBox duration={duration} />}
             response={duration}
-            setResponse={response => setDuration(response + 0.05)}
+            setResponse={response => response != null && setDuration(response + 0.05)}
             save={save}
-            defaultValue={DEFAULT_DURATION}
             minMark="SLOW"
             maxMark="FAST"
         />
@@ -647,17 +650,16 @@ const RotatingCubeTask = ({
 }: {
     save: (response: number) => void
 }) => {
-    const DEFAULT_DURATION = 2
-    const [duration, setDuration] = useState(DEFAULT_DURATION)
+    const DEFAULT_DURATION = null
+    const [duration, setDuration] = useState<number | null>(DEFAULT_DURATION)
 
     return (
         <>
             <TaskWithSlider
-                reference={<RotatingCube duration={duration + 1.5} />}
+                reference={<RotatingCube duration={duration != null ? (duration + 1.5) : duration} />}
                 response={duration}
-                setResponse={setDuration}
+                setResponse={response => response != null && setDuration(response)}
                 save={save}
-                defaultValue={DEFAULT_DURATION}
                 min={1}
                 max={4}
                 step={0.1}
@@ -668,44 +670,171 @@ const RotatingCubeTask = ({
     )
 }
 
-// const RotatingCube
+const TaskImageAttributes = {
+    border: "solid 2px",
+    rounded: "md",
+    height: "26rem",
+    boxShadow: "0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)"
+}
 
 const TaskWithMCQImages = ({
     reference,
     options,
-    save
+    save,
+    minMark,
+    maxMark
 }: {
     save: (response: string) => void
     reference: string
-    options: string[]
+    options: string[],
+    minMark?: string,
+    maxMark?: string
 }) => {
+    const [showSlider, setShowSlider] = useState(false)
+    const [showInputButtons, setShowInputButtons] = useState(false)
+    const [selectedOption, setSelectedOption] = useState(Math.ceil(options.length / 2) - 1)
+    const [submitScope, submitBlink] = useBlink()
+    const [othersScope, othersBlink] = useBlink()
+
+    const showInputs = () => {
+        setShowSlider(true)
+
+        setTimeout(() => setShowInputButtons(true), 1000)
+    }
+
+    const saveResponse = async (response: string, blink: () => void = () => '') => {
+        await blink()
+
+        save(response.replace('/static/images/tasks/', ''))
+    }
+
     return (
         <TaskForm
             reference={
-                <Img
-                    src={reference}
-                    border={"solid 2px"}
-                    rounded={"md"}
-                    height={"250px"}
-                    boxShadow={"0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)"}
-                    mb={"2rem"}
-                />
+                <Box w={'100%'}>
+                    <Box textAlign={'center'} fontSize={'3xl'}>
+                        {
+                            showSlider
+                                ? "Please choose how you imagined the clip in your mind's eye"
+                                : "Close your eyes, and please imagine this in your mind's eye"
+                        }
+                    </Box>
+
+                    <Box display={'flex'} w={'100%'} mb={'10'}>
+                        <Box display={'flex'} justifyContent={'center'} w={'100%'} mt={'10'}>
+                            <Img
+                                src={reference}
+                                {...TaskImageAttributes}
+                            />
+                        </Box>
+
+                        {
+                            showSlider &&
+                            <ImageSlider
+                                options={options}
+                                selectedOption={selectedOption}
+                                setSelectedOption={setSelectedOption}
+                                minMark={minMark}
+                                maxMark={maxMark}
+                            />
+                        }
+                    </Box>
+                </Box>
             }
             inputs={
                 <Flex
-                    gap={"1rem"}
-                    wrap={'wrap'}
-                    justify={'center'}
-                    mt={'5'}
+                    mt={"5"}
+                    gap={'5'}
                 >
                     {
-                        options.map((option, index) =>
-                            <ImageOption src={option} key={index} onSelect={() => save(option.replace('/static/images/tasks/', ''))} />
-                        )
+                        !showSlider &&
+                        <Button
+                            size={"lg"}
+                            colorScheme="blue"
+                            onClick={showInputs}
+                        >
+                            Ready to report
+                        </Button>
+                    }
+
+                    {
+                        showInputButtons &&
+                        <>
+                            <Button
+                                size={'lg'}
+                                ref={othersScope}
+                                onClick={() => saveResponse('Cannot visualize at all', othersBlink)}
+                            >
+                                Cannot visualize at all
+                            </Button>
+
+                            <Button
+                                size={"lg"}
+                                colorScheme="blue"
+                                ref={submitScope}
+                                onClick={() => saveResponse(options[selectedOption], submitBlink)}
+                            >
+                                Submit
+                            </Button>
+                        </>
                     }
                 </Flex>
             }
         />
+    )
+}
+
+const ImageSlider = ({
+    options,
+    selectedOption,
+    setSelectedOption,
+    minMark = '',
+    maxMark = ''
+}: {
+    options: string[]
+    selectedOption: number
+    setSelectedOption: (number) => void,
+    minMark?: string,
+    maxMark?: string
+}) => {
+    return (
+        <Box display={'flex'} flexDir={'column'} alignItems={'center'} justifyContent={'center'} w={'100%'} mt={'10'}>
+            {
+                options.map((option, index) =>
+                    <Img
+                        src={option}
+                        border={"solid 2px"}
+                        rounded={"md"}
+                        height={"26rem"}
+                        boxShadow={"0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)"}
+                        display={index == selectedOption ? 'block' : 'none'}
+                    />
+                )
+            }
+
+            <Slider
+                defaultValue={selectedOption}
+                min={0}
+                max={options.length - 1}
+                step={1}
+                onChange={setSelectedOption}
+                mt={'10'}
+            >
+                <SliderTrack bg='purple.400'>
+                    <Box position='relative' right={10} />
+                </SliderTrack>
+
+                <SliderThumb boxSize={6} />
+
+                <SliderMark value={0} {...SLIDER_MARK_ATTRIBUTES}>
+                    {minMark}
+                </SliderMark>
+
+                <SliderMark value={options.length - 1} {...SLIDER_MARK_ATTRIBUTES}>
+                    {maxMark}
+                </SliderMark>
+            </Slider>
+        </Box>
     )
 }
 
@@ -774,7 +903,6 @@ const TaskWithSlider = ({
     save,
     response,
     setResponse,
-    defaultValue,
     min = 0.1,
     max = 1,
     step = 0.05,
@@ -783,9 +911,8 @@ const TaskWithSlider = ({
 }: {
     reference: ReactNode
     save: (response: number) => void
-    response: number
+    response: number | null
     setResponse: (response: number) => void
-    defaultValue: number
     min?: number,
     max?: number,
     step?: number,
@@ -804,18 +931,16 @@ const TaskWithSlider = ({
                     width={"400px"}
                 >
                     <Slider
-                        defaultValue={defaultValue}
                         min={min}
                         max={max}
                         step={step}
                         onChange={value => setResponse(max - value)}
                     >
-                        <SliderTrack bg='purple.100'>
+                        <SliderTrack bg='purple.400'>
                             <Box position='relative' right={10} />
-                            <SliderFilledTrack bg='purple.400' />
                         </SliderTrack>
 
-                        <SliderThumb boxSize={6} />
+                        <SliderThumb boxSize={6} display={`${response == null && 'none'}`} />
 
                         <SliderMark value={min} {...SLIDER_MARK_ATTRIBUTES}>
                             {minMark}
@@ -827,7 +952,8 @@ const TaskWithSlider = ({
                     </Slider>
                 </Box>
             }
-            save={() => save(Math.round(response * 100) / 100)}
+            save={() => response != null && save(Math.round(response * 100) / 100)}
+            disableSave={response == null}
         />
     )
 }
@@ -835,11 +961,13 @@ const TaskWithSlider = ({
 const TaskForm = ({
     reference,
     inputs,
-    save
+    save,
+    disableSave
 }: {
     reference: ReactNode,
     inputs: ReactNode,
     save?: (() => void)
+    disableSave?: boolean
 }) => {
     const [scope, blink] = useBlink()
 
@@ -871,6 +999,7 @@ const TaskForm = ({
                     colorScheme={"blue"}
                     ref={scope}
                     onClick={buttonClick}
+                    isDisabled={disableSave}
                 >
                     Submit
                 </Button>
@@ -890,11 +1019,11 @@ const useBlink = (): [AnimationScope, () => void] => {
 const RotatingCube = ({
     duration
 }: {
-    duration: number
+    duration: number | null
 }) => {
     return (
         <div className="wrapper">
-            <div className="cube" style={{ animation: `spin ${duration}s infinite linear` }}>
+            <div className="cube" style={{ animation: `spin ${duration ? duration : 0}s infinite linear` }}>
                 <div className="one"></div>
                 <div className="two"></div>
                 <div className="three"></div>
