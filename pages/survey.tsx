@@ -803,11 +803,9 @@ const ImageSlider = ({
                 options.map((option, index) =>
                     <Img
                         src={option}
-                        border={"solid 2px"}
-                        rounded={"md"}
-                        height={"26rem"}
-                        boxShadow={"0 20px 25px -5px rgba(256, 256, 256, 0.1),0 10px 10px -5px rgba(256, 256, 256, 0.04)"}
+                        {...TaskImageAttributes}
                         display={index == selectedOption ? 'block' : 'none'}
+                        key={index}
                     />
                 )
             }
