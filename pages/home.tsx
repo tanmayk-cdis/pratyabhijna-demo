@@ -110,8 +110,10 @@ export const HeroSection: React.FC = () => {
   }
 
   useEffect(() => {
-    if (user?.accessToken)
-      router.push('/survey')
+    if (!user.loading) {
+      if (user?.accessToken)
+        router.push('/survey')
+    }
   }, [user, router])
 
   return (

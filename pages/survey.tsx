@@ -126,13 +126,15 @@ export const Survey: NextPage = () => {
     }, [])
 
     useEffect(() => {
-        if (!user?.accessToken)
-            router.push('/')
-        else
-            getTaskList()
+        if (!user?.loading) {
+            if (!user?.accessToken)
+                router.push('/')
+            else
+                getTaskList()
 
-        if (user && user.isRegistrationPending) {
-            setIsRegisterModalOpen(true)
+            if (user && user.isRegistrationPending) {
+                setIsRegisterModalOpen(true)
+            }
         }
     }, [user, router])
 
