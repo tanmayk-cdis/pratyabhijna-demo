@@ -147,7 +147,8 @@ export const Survey: NextPage = () => {
                 <FlickerTaskPremise1 key={1} />,
                 <FlickerTaskPremise2 key={2} />
             ],
-            content: <BlinkingBoxTask save={saveTaskResponse} />
+            content: <BlinkingBoxTask save={saveTaskResponse} />,
+            iconUrl: "/static/images/tasks/icons/4.png"
         },
         {
             title: "The Rotation Task",
@@ -156,7 +157,8 @@ export const Survey: NextPage = () => {
                 <RotationTaskPremise1 key={1} />,
                 <RotationTaskPremise2 key={2} />
             ],
-            content: <RotatingCubeTask save={saveTaskResponse} />
+            content: <RotatingCubeTask save={saveTaskResponse} />,
+            iconUrl: "/static/images/tasks/icons/6.png"
         },
         {
             title: "Dancing Task",
@@ -176,7 +178,8 @@ export const Survey: NextPage = () => {
                 save={saveTaskResponse}
                 minMark="Smooth"
                 maxMark="Choppy"
-            />
+            />,
+            iconUrl: "/static/images/tasks/icons/2.png"
         },
         {
             title: "Yoga Task",
@@ -196,7 +199,8 @@ export const Survey: NextPage = () => {
                 save={saveTaskResponse}
                 minMark="Smooth"
                 maxMark="Choppy"
-            />
+            />,
+            iconUrl: "/static/images/tasks/icons/3.png"
         },
         {
             title: "Follow the road Task",
@@ -217,7 +221,8 @@ export const Survey: NextPage = () => {
                 save={saveTaskResponse}
                 minMark="Dosen't Break"
                 maxMark="Broken"
-            />
+            />,
+            iconUrl: "/static/images/tasks/icons/5.png"
         },
         {
             title: "Running Tap Task ",
@@ -238,7 +243,8 @@ export const Survey: NextPage = () => {
                 save={saveTaskResponse}
                 minMark="Dosen't Break"
                 maxMark="Broken"
-            />
+            />,
+            iconUrl: "/static/images/tasks/icons/1.png"
         }
     ]
 
@@ -275,7 +281,8 @@ type Task = {
     title: string,
     description: ReactNode,
     premises: ReactNode[],
-    content: ReactNode
+    content: ReactNode,
+    iconUrl?: string
 }
 
 type SurveyHeroProps = {
@@ -298,6 +305,7 @@ export const SurveyHero = ({
                         key={index}
                         title={task.title}
                         description={task.description}
+                        iconUrl={task.iconUrl}
                         completed={Boolean(savedTasks && savedTasks.find(s_task => s_task.id == (index + 1))?.result)}
                         openModal={() => openModal(index)}
                     />
@@ -311,14 +319,16 @@ type CardProps = {
     description: ReactNode
     title: string
     openModal: (taskIndex) => void
-    completed: boolean
+    completed: boolean,
+    iconUrl?: string
 }
 
 const Card = ({
     title,
     description,
     openModal,
-    completed
+    completed,
+    iconUrl
 }: CardProps) => {
     const gradient = ["primary.500", "secondary.500"]
     const theme = useTheme();
@@ -345,9 +355,31 @@ const Card = ({
                 _dark={{ opacity: 0.5, filter: "blur(50px)" }}
             />
 
-            <div>
-                {description}
-            </div>
+            <Box
+                zIndex={10}
+                display={'flex'}
+            >
+                {
+                    iconUrl &&
+                    <Box
+                        height={0}
+                        position={'relative'}
+                        top={"-2rem"}
+                        left={"-1rem"}
+                        pb={'10'}
+                    >
+                        <Image
+                            src={iconUrl}
+                            maxH={'200px'}
+                            maxW={'200px'}
+                        />
+                    </Box>
+                }
+
+                <Box>
+                    {description}
+                </Box>
+            </Box>
 
             {
                 completed
