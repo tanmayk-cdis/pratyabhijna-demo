@@ -2,7 +2,7 @@ import { getUser } from "context/AuthContext";
 
 const { default: axios } = require("axios");
 
-export const baseUrl = "http://localhost:3000"
+export const baseUrl = "http://localhost:3002"
 
 axios.defaults.baseURL = baseUrl
 axios.defaults.timeout = 5000

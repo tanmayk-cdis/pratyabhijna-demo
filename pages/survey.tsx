@@ -953,6 +953,9 @@ const TaskWithSlider = ({
     // const DEFAULT_DURATION = 0.55
     // const [duration, setDuration] = useState(DEFAULT_DURATION)
 
+    const getNormalizedResponse = () =>
+        (Math.round((max - min - (response == null ? 0 : response)) * 100) / 100)
+
     return (
         <TaskForm
             reference={reference}
@@ -983,7 +986,7 @@ const TaskWithSlider = ({
                     </Slider>
                 </Box>
             }
-            save={() => response != null && save(Math.round(response * 100) / 100)}
+            save={() => response != null && save(getNormalizedResponse())}
             disableSave={response == null}
         />
     )
