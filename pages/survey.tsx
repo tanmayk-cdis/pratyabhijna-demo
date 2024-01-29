@@ -670,10 +670,11 @@ const BlinkingBoxTask = ({
         <TaskWithSlider
             reference={<BlinkingBox duration={duration} />}
             response={duration}
-            setResponse={response => response != null && setDuration(response + 0.05)}
+            setResponse={response => response != null && setDuration(response)}
             save={save}
             minMark="SLOW"
             maxMark="FAST"
+            maxBuffer={0.05}
         />
     )
 }
@@ -934,11 +935,12 @@ const TaskWithSlider = ({
     save,
     response,
     setResponse,
-    min = 0.1,
+    min = 0.05,
     max = 1,
     step = 0.05,
     minMark,
-    maxMark
+    maxMark,
+    maxBuffer = 0
 }: {
     reference: ReactNode
     save: (response: number) => void
@@ -948,13 +950,14 @@ const TaskWithSlider = ({
     max?: number,
     step?: number,
     minMark?: string,
-    maxMark?: string
+    maxMark?: string,
+    maxBuffer?: number
 }) => {
     // const DEFAULT_DURATION = 0.55
     // const [duration, setDuration] = useState(DEFAULT_DURATION)
 
     const getNormalizedResponse = () =>
-        (Math.round((max - min - (response == null ? 0 : response)) * 100) / 100)
+        (Math.round((max - min + maxBuffer - (response == null ? 0 : response)) * 100) / 100)
 
     return (
         <TaskForm
@@ -968,7 +971,7 @@ const TaskWithSlider = ({
                         min={min}
                         max={max}
                         step={step}
-                        onChange={value => setResponse(max - value)}
+                        onChange={value => setResponse(max - value + maxBuffer)}
                     >
                         <SliderTrack bg='purple.400'>
                             <Box position='relative' right={10} />
