@@ -593,8 +593,8 @@ const RegistrationModal = ({
 
                                 {/* <Input type='number' mb={'1'} value={age} onChange={(e) => setAge(e.target.value)} /> */}
                                 <Select placeholder='Select gender' value={gender} onChange={(e) => setGender(e.target.value)}>
-                                    <option value='f'>Male</option>
-                                    <option value='m'>Female</option>
+                                    <option value='m'>Male</option>
+                                    <option value='f'>Female</option>
                                     <option value='o'>Others</option>
                                 </Select>
                             </Box>
