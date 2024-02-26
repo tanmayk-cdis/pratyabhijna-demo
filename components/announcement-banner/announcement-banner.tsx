@@ -38,7 +38,7 @@ export const AnnouncementBanner: React.FC<AnnouncementBannerProps> = (
   return (
     <Flex position="absolute" zIndex="10" top="100px" width="100%">
       <Container maxW="container.2xl" px="8">
-        <FallInPlace delay={1.4} translateY="-100px">
+        <FallInPlace delay={0.2} translateY="-100px">
           <NextLink href={href} legacyBehavior>
             <Banner
               display="flex"
@@ -57,7 +57,7 @@ export const AnnouncementBanner: React.FC<AnnouncementBannerProps> = (
               overflow="visible"
               cursor="pointer"
               transition="all .2s ease-out"
-              _dark={{ bg: "gray.900", borderColor: "transparent" }}
+              // _dark={{ bg: "gray.900", borderColor: "transparent" }}
               _before={{
                 content: `""`,
                 position: "absolute",

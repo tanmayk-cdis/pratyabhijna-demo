@@ -30,6 +30,7 @@ import TapTaskPremise1 from "components/survey/content/tap-task/premise-1.mdx"
 import { AuthHttpService } from "services/http-service";
 import { useAuth } from "context/AuthContext";
 import { useRouter } from "next/router";
+import { AnnouncementBanner } from "components/announcement-banner";
 
 export type TaskDataType = {
     id?: number
@@ -51,6 +52,15 @@ export const Survey: NextPage = () => {
     // const [user, setUser] = useState<{ isRegistrationPending: boolean }>()
     const { user, updateUser } = useAuth()
     const router = useRouter()
+
+    const surveyCompleted = useMemo(
+        () => savedTaskList
+            .reduce(
+                (prev, taskData) => prev && taskData?.result != undefined,
+                true
+            ),
+        [savedTaskList]
+    )
 
 
     const saveTaskResponse = (response: string | number) => {
@@ -254,6 +264,14 @@ export const Survey: NextPage = () => {
                 title="Survey"
             // description="Free SaaS landingspage starter kit"
             />
+
+            {
+                surveyCompleted &&
+                <Box pb={10}>
+                    <AnnouncementBanner title="Study Completed!" description="" href="#" />
+                </Box>
+            }
+
             <Box>
                 <SurveyHero
                     openModal={(taskIndex) => { setIsModalOpen(true); setTaskIndex(taskIndex); }}
@@ -261,6 +279,13 @@ export const Survey: NextPage = () => {
                     savedTasks={savedTaskList}
                 />
             </Box>
+
+            {
+                surveyCompleted &&
+                <Box pb={10} position={'relative'} top={"-13rem"}>
+                    <AnnouncementBanner title="Study Completed!" description="" href="#" />
+                </Box>
+            }
 
             <SurveyModal
                 open={isModalOpen}
@@ -273,6 +298,8 @@ export const Survey: NextPage = () => {
                 open={isRegisterModalOpen}
                 onClosed={closeRegisterModal}
             />
+
+            <ScreenLimitingModal />
         </Box>
     );
 };
@@ -1069,6 +1096,32 @@ const RotatingCube = ({
                 <div className="six"></div>
             </div>
         </div>
+    )
+}
+
+const ScreenLimitingModal = () => {
+    const WidthThrehsold = 725 // pixels
+    const [showModal, setShowModal] = useState(false)
+
+    useEffect(() => {
+        if (window)
+            setShowModal(window.screen.width <= WidthThrehsold)
+    }, [])
+
+    return (
+        <Modal isOpen={showModal} size={'full'} onClose={() => ''} >
+            <ModalOverlay />
+
+            <ModalContent>
+                <ModalBody display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Text fontSize={"xl"} align={'center'}>
+                        Please use a device with a bigger screen.
+                        <br />
+                        Phones are not allowed to do this study.
+                    </Text>
+                </ModalBody>
+            </ModalContent>
+        </Modal>
     )
 }
 

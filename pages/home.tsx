@@ -73,6 +73,7 @@ import ConsentForm from "./consent-form.mdx"
 import Disclaimer from "./discalimer.mdx"
 import { useRouter } from "next/router";
 import { useAuth } from "context/AuthContext";
+import { daysToWeeks, differenceInDays } from "date-fns";
 
 const Home: NextPage = () => {
   return (
@@ -108,6 +109,13 @@ export const HeroSection: React.FC = () => {
     setIsConsentOpen(false)
     setIsDisclaimerOpen(true)
   }
+
+  const weekZero = new Date(2024, 0, 16)
+  const TotalWinners = 100
+
+  const elapsedWeeks = daysToWeeks(differenceInDays(new Date(), weekZero))
+
+  const winnersDeclared = Math.min(Math.round((elapsedWeeks ?? 0) / 2), TotalWinners)
 
   useEffect(() => {
     if (!user.loading) {
@@ -180,7 +188,26 @@ export const HeroSection: React.FC = () => {
         </Stack>
       </Container>
 
-      <Features
+      <Highlights>
+        <HighlightsItem title="Win &#8377;1,000 Amazon Coupon" colSpan={12} mt={40} mb={10}>
+          <Text fontSize={'2xl'}>
+            {TotalWinners} Lucky participants will get a chance to win a &#8377;1,000 Amazon coupon by a lucky draw.
+          </Text>
+
+          {
+            winnersDeclared < TotalWinners &&
+            <Text mt={5} fontSize={'3xl'} color={'purple.500'}>
+              {TotalWinners - winnersDeclared} winners still to be declared!!
+            </Text>
+          }
+
+          <Text>
+            {winnersDeclared} coupons have been given out.
+          </Text>
+        </HighlightsItem>
+      </Highlights>
+
+      {/* <Features
         visibility={"hidden"}
         id="benefits"
         columns={[1, 2, 4]}
@@ -221,7 +248,7 @@ export const HeroSection: React.FC = () => {
           },
         ]}
         reveal={FallInPlace}
-      />
+      /> */}
     </Box>
   );
 };
