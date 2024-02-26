@@ -1099,14 +1099,18 @@ const RotatingCube = ({
     )
 }
 
-const ScreenLimitingModal = () => {
+export const ScreenLimitingModal = ({
+    isActive = true
+}: {
+    isActive?: boolean
+}) => {
     const WidthThrehsold = 725 // pixels
     const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
-        if (window)
+        if (window && isActive)
             setShowModal(Math.min(window.screen.width, window.screen.height) <= WidthThrehsold)
-    }, [])
+    }, [isActive])
 
     return (
         <Modal isOpen={showModal} size={'full'} onClose={() => ''} >

@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { OTP_ROUTE_EMAIL, OTP_ROUTE_KEY } from 'helpers/constants'
 import { useAuth } from 'context/AuthContext'
+import { ScreenLimitingModal } from './survey'
 
 const OTP: NextPage = () => {
   const [otp, setOtp] = useState('')
@@ -108,6 +109,8 @@ const OTP: NextPage = () => {
           </Center>
         </Stack>
       </PageTransition>
+
+      <ScreenLimitingModal />
     </Section>
   )
 }

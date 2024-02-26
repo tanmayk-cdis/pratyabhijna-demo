@@ -74,6 +74,7 @@ import Disclaimer from "./discalimer.mdx"
 import { useRouter } from "next/router";
 import { useAuth } from "context/AuthContext";
 import { daysToWeeks, differenceInDays } from "date-fns";
+import { ScreenLimitingModal } from "./survey";
 
 const Home: NextPage = () => {
   return (
@@ -159,6 +160,8 @@ export const HeroSection: React.FC = () => {
           <ConsentModal onClosed={() => setIsConsentOpen(false)} open={isConsentOpen} save={saveConsent} />
 
           <DisclaimerModal onClosed={() => setIsDisclaimerOpen(false)} open={isDisclaimerOpen} save={() => router.push('/signup')} />
+
+          <ScreenLimitingModal isActive={isConsentOpen} />
 
           <Box
             height="600px"

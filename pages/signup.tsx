@@ -13,6 +13,7 @@ import { HttpService } from 'services/http-service'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { OTP_ROUTE_EMAIL, OTP_ROUTE_KEY } from 'helpers/constants'
+import { ScreenLimitingModal } from './survey'
 
 const providers = {
   google: {
@@ -105,6 +106,8 @@ const Login: NextPage = () => {
           </Center>
         </Stack>
       </PageTransition>
+
+      <ScreenLimitingModal />
     </Section>
   )
 }
