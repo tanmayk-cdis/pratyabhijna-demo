@@ -1105,7 +1105,7 @@ const ScreenLimitingModal = () => {
 
     useEffect(() => {
         if (window)
-            setShowModal(window.screen.width <= WidthThrehsold)
+            setShowModal(Math.min(window.screen.width, window.screen.height) <= WidthThrehsold)
     }, [])
 
     return (
