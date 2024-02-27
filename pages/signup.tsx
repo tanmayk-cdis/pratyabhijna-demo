@@ -12,7 +12,7 @@ import { PageTransition } from 'components/motion/page-transition'
 import { HttpService } from 'services/http-service'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { OTP_ROUTE_EMAIL, OTP_ROUTE_KEY } from 'helpers/constants'
+import { EMAIL_REGEX, OTP_ROUTE_EMAIL, OTP_ROUTE_KEY } from 'helpers/constants'
 import { ScreenLimitingModal } from './survey'
 
 const providers = {
@@ -32,8 +32,8 @@ const Login: NextPage = () => {
   const router = useRouter()
 
   const sendOTP = () => {
-    if (!email) {
-      alert('Please enter your email.')
+    if (!email || (email.match(EMAIL_REGEX) == null)) {
+      alert('Please enter a valid email.')
       return
     }
 
