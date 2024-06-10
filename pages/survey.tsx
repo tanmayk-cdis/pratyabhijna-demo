@@ -240,7 +240,7 @@ export const Survey: NextPage = () => {
             premises: [
                 <TapTaskPremise1 key={1} />
             ],
-            content: <TaskWithMCQImages
+            content: <TaskWithMultipleSliders
                 reference="/static/images/tasks/Tap_Task/Standard_Tap.gif"
                 options={[
                     "/static/images/tasks/Tap_Task/No_breaks.gif",
@@ -844,6 +844,120 @@ const TaskWithMCQImages = ({
         />
     )
 }
+const TaskWithMultipleSliders = ({
+    reference,
+    options,
+    save,
+    minMark,
+    maxMark
+}: {
+    save: (response: string) => void
+    reference: string
+    options: string[],
+    minMark?: string,
+    maxMark?: string
+}) => {
+    const [showSlider, setShowSlider] = useState(false)
+    const [showInputButtons, setShowInputButtons] = useState(false)
+    const [selectedOption, setSelectedOption] = useState('000')
+    const [submitScope, submitBlink] = useBlink()
+    const [othersScope, othersBlink] = useBlink()
+
+    const showInputs = () => {
+        setShowSlider(true)
+
+        setTimeout(() => setShowInputButtons(true), 1000)
+    }
+
+    const saveResponse = async (response: string, blink: () => void = () => '') => {
+        await blink()
+
+        save(response.replace('/static/images/tasks/', ''))
+    }
+
+    return (
+        <TaskForm
+            reference={
+                <Box w={'100%'}>
+                    <Box textAlign={'center'} fontSize={'3xl'}>
+                        {
+                            showSlider
+                                ? "Please choose how you imagined the clip in your mind's eye"
+                                : "Close your eyes, and please imagine this in your mind's eye"
+                        }
+                    </Box>
+
+                    <Box display={'flex'} w={'100%'} mb={'10'}>
+                        {/* <Box display={'flex'} justifyContent={'center'} w={'100%'} mt={'10'}>
+                            <Img
+                                src={reference}
+                                {...TaskImageAttributes}
+                            />
+                        </Box> */}
+
+                        {/* {
+                            showSlider &&
+                            <ImageSlider
+                                options={options}
+                                selectedOption={selectedOption}
+                                setSelectedOption={setSelectedOption}
+                                minMark={minMark}
+                                maxMark={maxMark}
+                            />
+                        } */}
+
+                        <ImageFromMultiSlider
+                            selectedOption={selectedOption}
+                            setSelectedOption={setSelectedOption}
+                            minMark={minMark}
+                            maxMark={maxMark}
+                        />
+
+                    </Box>
+                </Box>
+            }
+            inputs={
+                <Flex
+                    mt={"5"}
+                    gap={'5'}
+                >
+                    {
+                        !showSlider &&
+                        <Button
+                            size={"lg"}
+                            colorScheme="blue"
+                            onClick={showInputs}
+                        >
+                            Ready to report
+                        </Button>
+                    }
+
+                    {
+                        showInputButtons &&
+                        <>
+                            <Button
+                                size={'lg'}
+                                ref={othersScope}
+                                onClick={() => saveResponse('Cannot visualize at all', othersBlink)}
+                            >
+                                Cannot visualize at all
+                            </Button>
+
+                            <Button
+                                size={"lg"}
+                                colorScheme="blue"
+                                ref={submitScope}
+                                onClick={() => saveResponse(options[selectedOption], submitBlink)}
+                            >
+                                Submit
+                            </Button>
+                        </>
+                    }
+                </Flex>
+            }
+        />
+    )
+}
 
 const ImageSlider = ({
     options,
@@ -894,6 +1008,101 @@ const ImageSlider = ({
                 </SliderMark>
             </Slider>
         </Box>
+    )
+}
+
+
+const ImageFromMultiSlider = ({
+    // options,
+    selectedOption,
+    setSelectedOption,
+    minMark = '',
+    maxMark = ''
+}: {
+    // options: string[]
+    selectedOption: string
+    setSelectedOption: (string) => void,
+    minMark?: string,
+    maxMark?: string
+}) => {
+    const [slider1, setSlider1] = useState(parseInt(selectedOption.charAt(0)))
+    const [slider2, setSlider2] = useState(parseInt(selectedOption.charAt(1)))
+    const [slider3, setSlider3] = useState(parseInt(selectedOption.charAt(2)))
+
+    useEffect(() => {
+        setSelectedOption(`${slider1}${slider2}${slider3}`)
+    }, [slider1, slider2, slider3, setSelectedOption])
+
+    return (
+        <Box display={'flex'} flexDir={'row'} gap={'3rem'} alignItems={'center'} justifyContent={'center'} w={'100%'} mt={'10'}>
+            {
+                <Img
+                    src={`static/images/numbered_gifs/${slider1}${slider2}${slider3}.gif`}
+                    {...TaskImageAttributes}
+                    width={"40%"}
+                />
+            }
+
+            <Box width={"40%"} display={'flex'} flexDir={'column'} gap={"4rem"}>
+                <NumberSlider
+                    defaultValue={slider1}
+                    update={setSlider1}
+                    minMark={minMark}
+                    maxMark={maxMark}
+                />
+
+                <NumberSlider
+                    defaultValue={slider2}
+                    update={setSlider2}
+                    minMark={minMark}
+                    maxMark={maxMark}
+                />
+
+                <NumberSlider
+                    defaultValue={slider3}
+                    update={setSlider3}
+                    minMark={minMark}
+                    maxMark={maxMark}
+                />
+            </Box>
+        </Box>
+    )
+}
+
+const NumberSlider = ({
+    defaultValue,
+    update,
+    minMark,
+    maxMark
+}: {
+    defaultValue: number
+    update: (number) => void,
+    minMark: string,
+    maxMark: string
+}) => {
+    return (
+        <Slider
+            defaultValue={defaultValue}
+            min={0}
+            max={9}
+            step={1}
+            onChange={update}
+            mt={'10'}
+        >
+            <SliderTrack bg='purple.400'>
+                <Box position='relative' right={10} />
+            </SliderTrack>
+
+            <SliderThumb boxSize={6} />
+
+            <SliderMark value={0} {...SLIDER_MARK_ATTRIBUTES}>
+                {minMark}
+            </SliderMark>
+
+            <SliderMark value={9} {...SLIDER_MARK_ATTRIBUTES}>
+                {maxMark}
+            </SliderMark>
+        </Slider >
     )
 }
 
