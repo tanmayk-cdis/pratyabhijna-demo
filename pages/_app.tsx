@@ -16,15 +16,15 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SaasProvider theme={theme}>
       <AuthProvider> {/* Theme wala Auth */}
-        <AuthContextProvider> {/* Humara wala Auth */}
-          <Layout
-            announcementProps={announcement}
-            headerProps={header}
-            footerProps={footer}
-          >
-            <Component {...pageProps} />
-          </Layout>
-        </AuthContextProvider>
+        {/* <AuthContextProvider> Humara wala Auth */}
+        <Layout
+          announcementProps={announcement}
+          headerProps={header}
+          footerProps={footer}
+        >
+          <Component {...pageProps} />
+        </Layout>
+        {/* </AuthContextProvider> */}
       </AuthProvider>
     </SaasProvider>
   );
