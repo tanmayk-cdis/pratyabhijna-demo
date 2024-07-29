@@ -17,7 +17,7 @@ export default {
     {
       name: 'Caroline Yahaya',
       description: 'Fullstack Developer',
-      avatar: '/static/images/avatar2.jpg',
+      avatar: 'static/images/avatar2.jpg',
       children: (
         <>
           “Saas UI allows me to build beautiful and functional UI super fast.
@@ -29,7 +29,7 @@ export default {
     {
       name: 'Alberto Vazquez',
       description: 'Frontend Engineer',
-      avatar: '/static/images/avatar3.jpg',
+      avatar: 'static/images/avatar3.jpg',
       children: (
         <>
           “Saas UI gave us a perfect starting point for our project, having the
