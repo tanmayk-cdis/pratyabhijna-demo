@@ -4,6 +4,8 @@ import { withContentlayer } from 'next-contentlayer'
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   reactStrictMode: true,
+  output: "export",
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/your-repo-name/' : '',
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
