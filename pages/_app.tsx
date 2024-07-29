@@ -8,7 +8,6 @@ import theme from "../theme";
 
 import "../styles/survey.css"
 import "../styles/markdown.scss"
-import { AuthContextProvider } from "context/AuthContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { announcement, header, footer } = pageProps;

@@ -14,12 +14,8 @@ import { MobileNavContent } from "components/mobile-nav";
 import { useDisclosure, useUpdateEffect } from "@chakra-ui/react";
 
 import ThemeToggle from "./theme-toggle";
-import { useAuth } from "context/AuthContext";
 
 const Navigation: React.FC = () => {
-  const mobileNav = useDisclosure();
-  const router = useRouter();
-  const { user, logout } = useAuth()
 
 
   // const activeId = useScrollSpy(
@@ -58,7 +54,7 @@ const Navigation: React.FC = () => {
         );
       })} */}
 
-      {
+      {/* {
         user?.accessToken != null
           ? <Button
             display={["none", null, "block"]}
@@ -74,7 +70,7 @@ const Navigation: React.FC = () => {
           >
             Log In / Sign Up
           </NavLink>
-      }
+      } */}
 
       {/* <ThemeToggle /> */}
 
