@@ -128,7 +128,7 @@ export const Survey: NextPage = () => {
                 <FlickerTaskPremise2 key={2} />
             ],
             content: <BlinkingBoxTask save={saveTaskResponse} />,
-            iconUrl: "/static/images/tasks/icons/4.png"
+            iconUrl: "static/images/tasks/icons/4.png"
         },
         {
             title: "The Rotation Task",
@@ -138,7 +138,7 @@ export const Survey: NextPage = () => {
                 <RotationTaskPremise2 key={2} />
             ],
             content: <RotatingCubeTask save={saveTaskResponse} />,
-            iconUrl: "/static/images/tasks/icons/6.png"
+            iconUrl: "static/images/tasks/icons/6.png"
         },
         {
             title: "Dancing Task",
@@ -147,19 +147,19 @@ export const Survey: NextPage = () => {
                 <DancingTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
-                reference="/static/images/tasks/Dance_Task/Standard_Dance.gif"
+                reference="static/images/tasks/Dance_Task/Standard_Dance.gif"
                 options={[
-                    "/static/images/tasks/Dance_Task/Dance_jitter_0.gif",
-                    "/static/images/tasks/Dance_Task/Dance_jitter_2.gif",
-                    "/static/images/tasks/Dance_Task/Dance_jitter_4.gif",
-                    "/static/images/tasks/Dance_Task/Dance_jitter_10.gif",
-                    "/static/images/tasks/Dance_Task/Dance_jitter_20.gif"
+                    "static/images/tasks/Dance_Task/Dance_jitter_0.gif",
+                    "static/images/tasks/Dance_Task/Dance_jitter_2.gif",
+                    "static/images/tasks/Dance_Task/Dance_jitter_4.gif",
+                    "static/images/tasks/Dance_Task/Dance_jitter_10.gif",
+                    "static/images/tasks/Dance_Task/Dance_jitter_20.gif"
                 ]}
                 save={saveTaskResponse}
                 minMark="Smooth"
                 maxMark="Choppy"
             />,
-            iconUrl: "/static/images/tasks/icons/2.png"
+            iconUrl: "static/images/tasks/icons/2.png"
         },
         {
             title: "Yoga Task",
@@ -168,19 +168,19 @@ export const Survey: NextPage = () => {
                 <YogaTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
-                reference="/static/images/tasks/Yoga_Task/yoga_standard.gif"
+                reference="static/images/tasks/Yoga_Task/yoga_standard.gif"
                 options={[
-                    "/static/images/tasks/Yoga_Task/yoga_jitter_0.gif",
-                    "/static/images/tasks/Yoga_Task/yoga_jitter_2.gif",
-                    "/static/images/tasks/Yoga_Task/yoga_jitter_4.gif",
-                    "/static/images/tasks/Yoga_Task/yoga_jitter_10.gif",
-                    "/static/images/tasks/Yoga_Task/yoga_jitter_20.gif"
+                    "static/images/tasks/Yoga_Task/yoga_jitter_0.gif",
+                    "static/images/tasks/Yoga_Task/yoga_jitter_2.gif",
+                    "static/images/tasks/Yoga_Task/yoga_jitter_4.gif",
+                    "static/images/tasks/Yoga_Task/yoga_jitter_10.gif",
+                    "static/images/tasks/Yoga_Task/yoga_jitter_20.gif"
                 ]}
                 save={saveTaskResponse}
                 minMark="Smooth"
                 maxMark="Choppy"
             />,
-            iconUrl: "/static/images/tasks/icons/3.png"
+            iconUrl: "static/images/tasks/icons/3.png"
         },
         {
             title: "Follow the road Task",
@@ -189,20 +189,20 @@ export const Survey: NextPage = () => {
                 <RoadTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
-                reference="/static/images/tasks/Road_Task/road_standard.gif"
+                reference="static/images/tasks/Road_Task/road_standard.gif"
                 options={[
-                    "/static/images/tasks/Road_Task/road_no_break.gif",
-                    "/static/images/tasks/Road_Task/BREAK_1.gif",
-                    "/static/images/tasks/Road_Task/BREAK_2.gif",
-                    "/static/images/tasks/Road_Task/BREAK_3.gif",
-                    "/static/images/tasks/Road_Task/BREAK_4.gif",
-                    "/static/images/tasks/Road_Task/BREAK_5.gif"
+                    "static/images/tasks/Road_Task/road_no_break.gif",
+                    "static/images/tasks/Road_Task/BREAK_1.gif",
+                    "static/images/tasks/Road_Task/BREAK_2.gif",
+                    "static/images/tasks/Road_Task/BREAK_3.gif",
+                    "static/images/tasks/Road_Task/BREAK_4.gif",
+                    "static/images/tasks/Road_Task/BREAK_5.gif"
                 ]}
                 save={saveTaskResponse}
                 minMark="Dosen't Break"
                 maxMark="Broken"
             />,
-            iconUrl: "/static/images/tasks/icons/5.png"
+            iconUrl: "static/images/tasks/icons/5.png"
         },
         {
             title: "Running Tap Task ",
@@ -211,20 +211,20 @@ export const Survey: NextPage = () => {
                 <TapTaskPremise1 key={1} />
             ],
             content: <TaskWithMCQImages
-                reference="/static/images/tasks/Tap_Task/Standard_Tap.gif"
+                reference="static/images/tasks/Tap_Task/Standard_Tap.gif"
                 options={[
-                    "/static/images/tasks/Tap_Task/No_breaks.gif",
-                    "/static/images/tasks/Tap_Task/Tap_break_1.gif",
-                    "/static/images/tasks/Tap_Task/Tap_break_2.gif",
-                    "/static/images/tasks/Tap_Task/Tap_break_3.gif",
-                    "/static/images/tasks/Tap_Task/Tap_break_4.gif",
-                    "/static/images/tasks/Tap_Task/Tap_break_5.gif"
+                    "static/images/tasks/Tap_Task/No_breaks.gif",
+                    "static/images/tasks/Tap_Task/Tap_break_1.gif",
+                    "static/images/tasks/Tap_Task/Tap_break_2.gif",
+                    "static/images/tasks/Tap_Task/Tap_break_3.gif",
+                    "static/images/tasks/Tap_Task/Tap_break_4.gif",
+                    "static/images/tasks/Tap_Task/Tap_break_5.gif"
                 ]}
                 save={saveTaskResponse}
                 minMark="Dosen't Break"
                 maxMark="Broken"
             />,
-            iconUrl: "/static/images/tasks/icons/1.png"
+            iconUrl: "static/images/tasks/icons/1.png"
         }
     ]
 
@@ -362,7 +362,7 @@ const Card = ({
             {
                 completed
                     ? <Image
-                        src="/static/images/check.svg"
+                        src="static/images/check.svg"
                         height={"16"}
                         alignSelf={"end"}
                         alt="check mark"
@@ -612,7 +612,7 @@ const TaskWithMCQImages = ({
     const saveResponse = async (response: string, blink: () => void = () => '') => {
         await blink()
 
-        save(response.replace('/static/images/tasks/', ''))
+        save(response.replace('static/images/tasks/', ''))
     }
 
     return (
@@ -718,7 +718,7 @@ const TaskWithMultipleSliders = ({
     const saveResponse = async (response: string, blink: () => void = () => '') => {
         await blink()
 
-        save(response.replace('/static/images/tasks/', ''))
+        save(response.replace('static/images/tasks/', ''))
     }
 
     return (
